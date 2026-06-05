@@ -25,19 +25,20 @@ _Last updated: 2026-06-05_
 - **Added** the hardened SQL relay (`POST /api/admin/relay`, see
   `docs/RENDERNEONSQLRELAY.md`) — constant-time auth, disabled-when-unset `503` gate.
   Gated by `ADMIN_RELAY_PASSWORD` (set in the Render env).
+- **Docs:** populated `README.md`, `WORKING-STATE.md`, `PLAN.md` (were empty stubs).
+- **CLAUDE.md de-zombied** — stripped ForgeOS residue (Forge brand IDs, old relay map,
+  dead endpoints/lore), corrected repo facts (one Render service from `main`, no linked
+  env group, real relay map).
+- **GitNexus indexing** — ran `npx gitnexus analyze`; Pitch Box is now indexed as
+  `Pitch-Box` (10 files, **176 symbols / 174 edges / 3 clusters / 0 flows**). The
+  generated section in `CLAUDE.md` + `AGENTS.md` now carries real stats; canonical
+  skills live in `.claude/skills/gitnexus/`. The `.gitnexus/` graph is local-only
+  (self-ignored) — rebuilt on demand via `analyze`.
 
-All of the above is merged to `main` (PRs #1 → #2 rollup, #3 → rollup).
-
-## In flight
-
-- Docs catch-up: this `WORKING-STATE.md`, `PLAN.md`, and `README.md` populated
-  (replacing empty template stubs).
+All app/infra/docs above is merged to `main` (PRs #1 → #2 rollup, #3 rollup, #5, #6).
 
 ## Next
 
-- **CLAUDE.md rewrite** — still ForgeOS template boilerplate (false GitNexus
-  "Forge-Intelligence" index, old `forgeintelligence.ai` relay, Forge brand IDs).
-  To be done **together** in a focused pass.
 - **Data migration** — port existing rows from the old `XM_DEMAND` Neon DB into the
   clean `DATABASE_URL` project (can run through the relay).
 - **Confirm Render branch binding** — verify `srv-d8h5g66q1p3s73fol5b0` deploys from
@@ -51,3 +52,6 @@ All of the above is merged to `main` (PRs #1 → #2 rollup, #3 → rollup).
 - `index.html` — the whole frontend (vanilla JS, no build).
 - `docs/` — `RENDERNEONSQLRELAY.md`, `CI-AND-PR-CHECKS.md`, (stale) `FORGESCRAPE-…`.
 - `.github/workflows/ci.yml` — `Typecheck & Test` (= `node --check`), the merge gate.
+- `CLAUDE.md` / `AGENTS.md` — agent context; bottom GitNexus section is generated.
+- `.claude/skills/gitnexus/` — GitNexus skill files (generated, canonical).
+- `.gitnexus/` — local code-graph index (git-ignored; regenerate with `analyze`).

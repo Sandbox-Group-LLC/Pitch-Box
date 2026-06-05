@@ -1,0 +1,73 @@
+name: Brain Refresh
+
+# Re-index this repo into the shared GitNexus "Sandbox Brain" whenever production
+# (main) changes, so the central code-graph stays current without a manual run.
+#
+# Safe-by-design:
+# - Separate workflow + unique job name → no collision with the "Typecheck & Test"
+#   required check (see docs/CI-AND-PR-CHECKS.md). Triggers on push:main only, never
+#   on pull_request, so it does not touch the merge gate.
+# - Best-effort: if the brain is down / OOM / slow, we WARN and exit 0 (brain capacity
+#   is not this repo's problem). We only fail on a definitive analyze "failed".
+#
+# Config:
+# - vars.BRAIN_URL     (optional) override the brain endpoint. Default below.
+# - secrets.BRAIN_API_KEY (optional) Bearer token, sent only if set (brain is
+#   currently unauthenticated; this is forward-compat for when API_KEY is enabled).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: brain-refresh-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: Reindex into Sandbox Brain
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger + poll brain analyze
+        env:
+          BRAIN: ${{ vars.BRAIN_URL || 'https://sandbox-brain.onrender.com' }}
+          API_KEY: ${{ secrets.BRAIN_API_KEY }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+        run: |
+          set -uo pipefail
+          AUTH=()
+          [ -n "${API_KEY:-}" ] && AUTH=(-H "Authorization: Bearer ${API_KEY}")
+
+          echo "POST $BRAIN/api/analyze  ($REPO_URL)"
+          resp=$(curl -sS -m 60 -w $'\n%{http_code}' "${AUTH[@]}" \
+                 -X POST "$BRAIN/api/analyze" \
+                 -H 'Content-Type: application/json' \
+                 -d "{\"url\":\"$REPO_URL\"}" 2>&1) || {
+            echo "::warning::brain unreachable on POST — skipping (best-effort)"; exit 0; }
+          http=$(printf '%s' "$resp" | tail -n1); body=$(printf '%s' "$resp" | sed '$d')
+          echo "HTTP $http: $body"
+          case "$http" in 5*|000|"") echo "::warning::brain $http on POST (down/OOM) — skipping"; exit 0;; esac
+
+          jid=$(printf '%s' "$body" | grep -oE '"(jobId|id)"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed -E 's/.*:"([^"]*)"/\1/')
+          [ -z "$jid" ] && { echo "::warning::no jobId returned — skipping"; exit 0; }
+
+          start=$(date +%s); gw=0
+          while :; do
+            el=$(( $(date +%s) - start ))
+            [ "$el" -ge 240 ] && { echo "::warning::>240s without finishing (likely OOM) — skipping"; exit 0; }
+            s=$(curl -sS -m 30 -w $'\n%{http_code}' "${AUTH[@]}" "$BRAIN/api/analyze/$jid" 2>/dev/null)
+            sh=$(printf '%s' "$s" | tail -n1); sb=$(printf '%s' "$s" | sed '$d')
+            case "$sh" in
+              502|503|504|000|"") gw=$((gw+1)); [ "$gw" -ge 3 ] && { echo "::warning::brain gateway $sh x$gw — skipping"; exit 0; }; sleep 5; continue;;
+            esac
+            gw=0
+            st=$(printf '%s' "$sb" | grep -oE '"status"[^,}]*' | head -1 | sed -E 's/.*:[[:space:]]*"([^"]*)".*/\1/')
+            ph=$(printf '%s' "$sb" | grep -oE '"phase"[^,}]*'  | head -1 | sed -E 's/.*:[[:space:]]*"([^"]*)".*/\1/')
+            echo "[+${el}s] ${st:-?}/${ph:-?}"
+            case "$st" in
+              complete|completed) echo "✅ reindexed into the brain in ${el}s"; exit 0;;
+              failed|error) echo "::error::brain analyze failed: $sb"; exit 1;;
+            esac
+            sleep 5
+          done
