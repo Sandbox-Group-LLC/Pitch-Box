@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var crypto = require('crypto');
 var { neon } = require('@neondatabase/serverless');
 
 var app = express();
@@ -1057,6 +1058,43 @@ app.delete('/api/notes/:id', function(req, res) {
   sql('DELETE FROM notes WHERE id = $1', [id]).then(function() {
     res.json({ ok: true });
   }).catch(function(e) { res.status(500).json({ ok: false, error: e.message }); });
+});
+
+// ---- Admin SQL relay ----
+// Hardened ad-hoc SQL endpoint (see docs/RENDERNEONSQLRELAY.md): constant-time
+// auth, disabled-when-unset gate, light audit line. Runs parameterized SQL
+// against the app's Neon DB via the same `sql` helper the rest of the app uses.
+// Secret is env-only (ADMIN_RELAY_PASSWORD); never call this from the browser.
+function validAdmin(provided) {
+  var expected = process.env.ADMIN_RELAY_PASSWORD;
+  if (!expected) return false;
+  if (typeof provided !== 'string' || provided.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
+}
+
+app.post('/api/admin/relay', function(req, res) {
+  // Disabled-when-unset: an unconfigured deploy must not expose an open SQL endpoint.
+  if (!process.env.ADMIN_RELAY_PASSWORD) {
+    return res.status(503).json({ success: false, error: 'Relay disabled (ADMIN_RELAY_PASSWORD not set)' });
+  }
+  var body = req.body || {};
+  if (!validAdmin(body.adminPassword)) {
+    return res.status(403).json({ success: false, error: 'Unauthorized' });
+  }
+  if (typeof body.query !== 'string' || !body.query.trim()) {
+    return res.status(400).json({ success: false, error: 'query (string) required' });
+  }
+  if (!sql) {
+    return res.status(503).json({ success: false, error: 'Database not configured. Set DATABASE_URL.' });
+  }
+  var values = Array.isArray(body.values) ? body.values : [];
+  sql(body.query, values).then(function(rows) {
+    // Light audit — what ran when, without dumping full statement/params (may hold PII).
+    console.log('[RELAY] ' + new Date().toISOString() + ' rows=' + rows.length + ' sql="' + body.query.slice(0, 120).replace(/\s+/g, ' ') + '"');
+    res.json({ success: true, rows: rows, rowCount: rows.length });
+  }).catch(function(e) {
+    res.status(500).json({ success: false, error: e.message });
+  });
 });
 
 app.listen(PORT, '0.0.0.0', function() {
