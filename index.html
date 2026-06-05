@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pitch Box — Demand &amp; Acquisition Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="/forge-os/inspect.js" defer></script>
+<style>
+  :root {
+    --bg: #0F1020;
+    --bg-2: #16213E;
+    --bg-3: #0F3460;
+    --panel: rgba(22, 33, 62, 0.55);
+    --panel-strong: rgba(22, 33, 62, 0.85);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+    --text: #F3F4F7;
+    --text-dim: #A9B0C2;
+    --text-muted: #6B7390;
+    --accent: #E94560;
+    --accent-soft: rgba(233, 69, 96, 0.15);
+    --high: #E94560;
+    --med: #E9A645;
+    --low: #6B7390;
+    --active: #3FB77A;
+    --planning: #5B8AE9;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(ellipse at top, #1a1a3a 0%, #0F1020 55%) fixed;
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin: 0;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(8,9,20,0.72);
+    backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: linear-gradient(180deg, #1a2647 0%, #16213E 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    width: 100%; max-width: 520px;
+    padding: 24px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(233,69,96,0.08);
+  }
+  .modal h3 {
+    font-family: 'Space Grotesk'; font-size: 18px; margin-bottom: 4px;
+  }
+  .modal .modal-sub {
+    color: var(--text-muted); font-size: 12.5px; margin-bottom: 18px;
+  }
+  .modal label {
+    display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); margin: 12px 0 6px;
+  }
+  .modal input, .modal textarea {
+    width: 100%;
+    background: rgba(15,16,32,0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter'; font-size: 13.5px;
+    padding: 10px 12px;
+    transition: border-color 0.15s;
+  }
+  .modal input:focus, .modal textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .modal textarea { min-height: 90px; resize: vertical; font-family: 'Inter'; line-height: 1.5; }
+  .modal-actions {
+    display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;
+  }
+  .modal .btn-cancel {
+    background: transparent; color: var(--text-dim);
+    border: 1px solid var(--border-strong);
+    padding: 8px 14px; border-radius: 8px; cursor: pointer;
+    font-family: 'Inter'; font-size: 13px;
+  }
+  .modal .btn-primary {
+    background: var(--accent); color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-family: 'Inter'; font-weight: 600; font-size: 13px;
+  }
+  .modal .btn-primary:hover { background: #d63a55; }
+  .modal .btn-primary:disabled { opacity: 0.5; cursor: wait; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    background: linear-gradient(180deg, #1a2647 0%, #16213E 100%);
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--accent);
+    color: var(--text); font-size: 13px;
+    padding: 12px 16px; border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    max-width: 360px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { border-left-color: var(--active); }
+  .toast.error { border-left-color: var(--accent); }
+
+  /* ---------- Top Bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px);
+    background: rgba(15, 16, 32, 0.78);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #E94560, #b8334a);
+    display: grid; place-items: center;
+    font-family: 'Space Grotesk'; font-weight: 800; color: #fff; font-size: 15px;
+  }
+  .brand-text h1 { font-size: 15px; letter-spacing: 0.01em; }
+  .brand-text small { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
+  .tabs { display: flex; gap: 4px; }
+  .tab {
+    background: transparent; border: 1px solid transparent;
+    color: var(--text-dim); font-family: 'Inter'; font-weight: 500; font-size: 13px;
+    padding: 8px 14px; border-radius: 8px; cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .tab.active { background: var(--accent-soft); color: var(--text); border-color: rgba(233,69,96,0.3); }
+  .save-indicator {
+    font-size: 11px; color: var(--text-muted);
+    display: flex; align-items: center; gap: 6px;
+    transition: opacity 0.3s;
+  }
+  .save-indicator .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--active); }
+  .save-indicator.saving .dot { background: var(--med); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: 1440px; margin: 0 auto; padding: 24px; }
+
+  .hero {
+    background: linear-gradient(135deg, rgba(15,52,96,0.6), rgba(22,33,62,0.6));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .hero h2 { font-size: 22px; margin-bottom: 6px; }
+  .hero p { color: var(--text-dim); margin: 0; max-width: 720px; font-size: 13.5px; }
+  .hero .positioning {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .pos-item strong { display: block; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; font-family: 'Space Grotesk'; font-weight: 600; }
+  .pos-item span { color: var(--text-dim); font-size: 13px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; gap: 12px;
+  }
+  .section-head h2 { font-size: 20px; }
+  .section-head .sub { color: var(--text-muted); font-size: 12.5px; }
+
+  /* ---------- Cards ---------- */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card h3 { font-size: 15px; margin-bottom: 4px; font-family: 'Space Grotesk'; font-weight: 600; }
+  .card .meta { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+  .field-label {
+    display: block;
+    font-size: 10.5px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin: 12px 0 4px;
+    font-family: 'Space Grotesk'; font-weight: 600;
+  }
+  .editable {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text);
+    font-family: inherit; font-size: 13px; line-height: 1.5;
+    padding: 6px 8px;
+    border-radius: 6px;
+    resize: vertical;
+    transition: background 0.1s, border-color 0.1s;
+    min-height: 22px;
+  }
+  .editable:hover { background: rgba(255,255,255,0.03); }
+  .editable:focus { outline: none; background: rgba(0,0,0,0.25); border-color: var(--accent); }
+  textarea.editable { min-height: 56px; font-family: inherit; }
+  input.editable { min-height: 32px; }
+  .editable.title-input { font-family: 'Space Grotesk'; font-weight: 600; font-size: 15px; padding: 4px 6px; color: #fff; }
+
+  /* ---------- Channels ---------- */
+  .pill {
+    display: inline-block;
+    font-size: 10.5px; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-family: 'Space Grotesk';
+  }
+  .pill-high { background: rgba(233,69,96,0.18); color: #ff8096; }
+  .pill-med { background: rgba(233,166,69,0.18); color: #f5c77a; }
+  .pill-low { background: rgba(107,115,144,0.2); color: #a9b0c2; }
+  .pill-active { background: rgba(63,183,122,0.18); color: #66d99b; }
+  .pill-planning { background: rgba(91,138,233,0.18); color: #8fb0ef; }
+  .pill-paused { background: rgba(107,115,144,0.2); color: #a9b0c2; }
+
+  .select-pill {
+    font-size: 10.5px; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-family: 'Space Grotesk';
+    border: none; cursor: pointer;
+    background: rgba(107,115,144,0.2); color: #a9b0c2;
+  }
+  .select-pill:focus { outline: 2px solid var(--accent); }
+
+  .pill-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+
+  /* ---------- Kanban ---------- */
+  .kanban {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+  .kcol {
+    background: rgba(15,16,32,0.55);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 320px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .kcol.dragover { border-color: var(--accent); background: rgba(233,69,96,0.05); }
+  .kcol-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .kcol-head h4 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-family: 'Space Grotesk'; font-weight: 600; }
+  .kcol-head .count { font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 1px 8px; border-radius: 999px; }
+  .kcard {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: grab;
+    transition: transform 0.1s, border-color 0.1s;
+  }
+  .kcard:active { cursor: grabbing; }
+  .kcard:hover { border-color: var(--accent); }
+  .kcard.dragging { opacity: 0.4; }
+  .kcard .company { font-family: 'Space Grotesk'; font-weight: 600; font-size: 13.5px; color: #fff; margin-bottom: 3px; }
+  .kcard .cat { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .kcard .note { font-size: 12px; color: var(--text-dim); line-height: 1.45; }
+  .kcard-edit { display: none; }
+  .kcard.editing .kcard-view { display: none; }
+  .kcard.editing .kcard-edit { display: block; }
+  .kcard .row { display: flex; gap: 8px; justify-content: space-between; margin-top: 8px; }
+  .mini-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-dim); font-size: 11px;
+    padding: 3px 8px; border-radius: 6px; cursor: pointer;
+    font-family: inherit;
+  }
+  .mini-btn:hover { color: #fff; border-color: var(--text-dim); }
+  .mini-btn.danger:hover { color: var(--accent); border-color: var(--accent); }
+
+  .btn {
+    background: var(--accent); color: #fff;
+    border: none;
+    padding: 9px 16px; border-radius: 8px;
+    font-family: 'Space Grotesk'; font-weight: 600; font-size: 12.5px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn:hover { background: #ff5872; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border-strong); color: var(--text); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.05); }
+
+  /* ---------- Quick Ideas ---------- */
+  .qi-account-group {
+    margin-bottom: 28px;
+  }
+  .qi-account-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .qi-account-header h3 {
+    font-family: 'Space Grotesk'; font-size: 16px; font-weight: 700;
+    color: #fff;
+  }
+  .qi-account-header .qi-account-meta {
+    font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: 'Space Grotesk'; font-weight: 600;
+  }
+  .qi-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .qi-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: border-color 0.15s ease;
+    display: flex; flex-direction: column;
+  }
+  .qi-card:hover { border-color: var(--border-strong); }
+  .qi-card.promoted { opacity: 0.65; border-style: dashed; }
+  .qi-card-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 10px; margin-bottom: 4px;
+  }
+  .qi-card-head-left { flex: 1; min-width: 0; }
+  .qi-card-head-right { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .qi-empty {
+    color: var(--text-muted); font-size: 13px; padding: 24px;
+    text-align: center; border: 1px dashed var(--border); border-radius: 12px;
+  }
+  @media (max-width: 1100px) {
+    .qi-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Notes ---------- */
+  .notes-compose {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .notes-compose textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px;
+    min-height: 70px;
+    resize: vertical;
+  }
+  .notes-compose textarea:focus { outline: none; border-color: var(--accent); }
+  .note-item {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  .note-item .body { font-size: 13px; color: var(--text); white-space: pre-wrap; flex: 1; }
+  .note-item .stamp { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1100px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .kanban { grid-template-columns: repeat(3, 1fr); }
+    .hero .positioning { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .container { padding: 16px; }
+    .topbar { flex-wrap: wrap; padding: 12px 16px; }
+    .tabs { order: 3; width: 100%; overflow-x: auto; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .kanban { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">PB</div>
+    <div class="brand-text">
+      <h1>Pitch Box — Demand Board</h1>
+      <small>Internal Planning Whiteboard</small>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="personas">Buyers</button>
+    <button class="tab" data-tab="channels">Channels</button>
+    <button class="tab" data-tab="accounts">Accounts</button>
+    <button class="tab" data-tab="pitches">Pitches</button>
+    <button class="tab" data-tab="quick-ideas">Quick Ideas</button>
+    <button class="tab" data-tab="playbooks">Playbooks</button>
+    <button class="tab" data-tab="notes">Notes</button>
+  </div>
+  <div class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Saved</span></div>
+</div>
+
+<div class="container">
+
+  <div class="hero">
+    <h2>How we get Sandbox-XM in front of buyers.</h2>
+    <p>This is our working surface — not a pitch site. We plan, track, and iterate on every channel, persona, account, and play that moves Sandbox-XM closer to a booked roster. Edit anything. It saves.</p>
+    <div class="positioning">
+      <div class="pos-item"><strong>Who we serve</strong><span>Brand-led teams who believe experience is strategy — not staging.</span></div>
+      <div class="pos-item"><strong>What we do differently</strong><span>We start from the audience question, not the floorplan. Every moment laddered to meaning.</span></div>
+      <div class="pos-item"><strong>What we sell</strong><span>Intentional, human-centered experience design — analog, warm, real.</span></div>
+    </div>
+  </div>
+
+  <!-- PERSONAS -->
+  <section class="section active" id="sec-personas">
+    <div class="section-head">
+      <div>
+        <h2>Buyer Personas</h2>
+        <div class="sub">Who we're targeting, what keeps them up, and why Sandbox-XM is the answer.</div>
+      </div>
+    </div>
+    <div class="grid grid-2" id="personaGrid"></div>
+  </section>
+
+  <!-- CHANNELS -->
+  <section class="section" id="sec-channels">
+    <div class="section-head">
+      <div>
+        <h2>Channel Strategy</h2>
+        <div class="sub">Where we show up and how we earn attention. Priorities first, never volume.</div>
+      </div>
+    </div>
+    <div class="grid grid-2" id="channelGrid"></div>
+  </section>
+
+  <!-- ACCOUNTS -->
+  <section class="section" id="sec-accounts">
+    <div class="section-head">
+      <div>
+        <h2>Target Accounts</h2>
+        <div class="sub">Live pipeline. Drag cards across stages as they move.</div>
+      </div>
+      <button class="btn" id="addAccountBtn">+ Add Account</button>
+    </div>
+    <div class="kanban" id="kanban">
+      <div class="kcol" data-stage="prospect"><div class="kcol-head"><h4>Prospect</h4><span class="count" data-count="prospect">0</span></div></div>
+      <div class="kcol" data-stage="researching"><div class="kcol-head"><h4>Researching</h4><span class="count" data-count="researching">0</span></div></div>
+      <div class="kcol" data-stage="contacted"><div class="kcol-head"><h4>Contacted</h4><span class="count" data-count="contacted">0</span></div></div>
+      <div class="kcol" data-stage="meeting"><div class="kcol-head"><h4>Meeting</h4><span class="count" data-count="meeting">0</span></div></div>
+      <div class="kcol" data-stage="won"><div class="kcol-head"><h4>Won</h4><span class="count" data-count="won">0</span></div></div>
+      <div class="kcol" data-stage="lost"><div class="kcol-head"><h4>Passed</h4><span class="count" data-count="lost">0</span></div></div>
+    </div>
+  </section>
+
+  <!-- PITCHES -->
+  <section class="section" id="sec-pitches">
+    <div class="section-head">
+      <div>
+        <h2>Active Pitches</h2>
+        <div class="sub">Concept-led pitches for named brands. One hero idea per target. Draft &rarr; sent &rarr; meeting &rarr; won.</div>
+      </div>
+      <button class="btn" id="addPitchBtn">+ New Pitch</button>
+    </div>
+    <div id="pitchList"></div>
+  </section>
+
+  <!-- QUICK IDEAS -->
+  <section class="section" id="sec-quick-ideas">
+    <div class="section-head">
+      <div>
+        <h2>Quick Ideas</h2>
+        <div class="sub">Half-formed sketches by account. Negotiation leverage for the big pitch &mdash; promote any one of these into a full Pitch when it's ready to lead.</div>
+      </div>
+      <button class="btn" id="addQuickIdeaBtn">+ New Quick Idea</button>
+    </div>
+    <div id="quickIdeasList"></div>
+  </section>
+
+  <!-- PLAYBOOKS -->
+  <section class="section" id="sec-playbooks">
+    <div class="section-head">
+      <div>
+        <h2>Playbooks</h2>
+        <div class="sub">Repeatable plays. Each one a way to turn interest into engagement.</div>
+      </div>
+    </div>
+    <div class="grid grid-2" id="playbookGrid"></div>
+  </section>
+
+  <!-- NOTES -->
+  <section class="section" id="sec-notes">
+    <div class="section-head">
+      <div>
+        <h2>Strategy Notes</h2>
+        <div class="sub">Running journal — ideas, wins, doubts, things to revisit.</div>
+      </div>
+    </div>
+    <div class="notes-compose">
+      <textarea id="noteBody" placeholder="New thought, observation, or idea..."></textarea>
+      <div style="display:flex; justify-content:flex-end; margin-top:10px; gap:8px;">
+        <button class="btn" id="addNoteBtn">Add Note</button>
+      </div>
+    </div>
+    <div id="notesList"></div>
+  </section>
+
+</div>
+
+<!-- Modal: Add Account / Add Pitch -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <h3 id="modalTitle">Add Account</h3>
+    <div class="modal-sub" id="modalSub">Capture the company and any signal you already have. You can fill the rest on the card.</div>
+    <div id="modalFields"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modalCancel">Cancel</button>
+      <button class="btn-primary" id="modalSubmit">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  var state = { personas: [], channels: [], accounts: [], playbooks: [], notes: [], pitches: [], quick_ideas: [] };
+  var saveTimers = {};
+
+  // ---- Save indicator ----
+  var indicator = document.getElementById('saveIndicator');
+  var saveText = document.getElementById('saveText');
+  function showSaving() {
+    indicator.classList.add('saving');
+    saveText.textContent = 'Saving...';
+  }
+  function showSaved() {
+    indicator.classList.remove('saving');
+    saveText.textContent = 'Saved';
+  }
+  function showError(msg) {
+    indicator.classList.remove('saving');
+    saveText.textContent = msg || 'Error';
+    saveText.style.color = '#ff8096';
+    setTimeout(function() { saveText.style.color = ''; showSaved(); }, 2500);
+  }
+
+  // ---- Tabs ----
+  document.querySelectorAll('.tab').forEach(function(t) {
+    t.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
+      document.querySelectorAll('.section').forEach(function(x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      document.getElementById('sec-' + t.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---- Debounced save ----
+  function queueSave(table, id, field, value) {
+    var key = table + ':' + id + ':' + field;
+    if (saveTimers[key]) clearTimeout(saveTimers[key]);
+    showSaving();
+    saveTimers[key] = setTimeout(function() {
+      var body = {}; body[field] = value;
+      fetch('/api/' + table + '/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(function(r) { return r.json(); }).then(function(j) {
+        if (j.ok) showSaved(); else showError(j.error);
+      }).catch(function() { showError('Network'); });
+    }, 600);
+  }
+
+  // ---- Editable factory ----
+  function makeEditable(tag, value, table, id, field, placeholder) {
+    var el = document.createElement(tag);
+    el.className = 'editable' + (field === 'title' || field === 'name' || field === 'company' ? ' title-input' : '');
+    if (tag === 'textarea') { el.value = value || ''; }
+    else { el.value = value || ''; }
+    if (placeholder) el.placeholder = placeholder;
+    el.addEventListener('input', function() {
+      queueSave(table, id, field, el.value);
+    });
+    return el;
+  }
+
+  function makeLabel(txt) {
+    var l = document.createElement('div');
+    l.className = 'field-label';
+    l.textContent = txt;
+    return l;
+  }
+
+  // ---- Personas ----
+  function renderPersonas() {
+    var grid = document.getElementById('personaGrid');
+    grid.innerHTML = '';
+    state.personas.forEach(function(p) {
+      var c = document.createElement('div');
+      c.className = 'card';
+      var title = makeEditable('input', p.title, 'personas', p.id, 'title');
+      c.appendChild(title);
+      var meta = makeEditable('input', p.company_type, 'personas', p.id, 'company_type', 'Company type');
+      meta.style.color = 'var(--text-muted)'; meta.style.fontSize = '12px';
+      c.appendChild(meta);
+      c.appendChild(makeLabel('Pain'));
+      c.appendChild(makeEditable('textarea', p.pain, 'personas', p.id, 'pain'));
+      c.appendChild(makeLabel('Trigger'));
+      c.appendChild(makeEditable('textarea', p.trigger, 'personas', p.id, 'trigger'));
+      c.appendChild(makeLabel('Our value prop'));
+      c.appendChild(makeEditable('textarea', p.value_prop, 'personas', p.id, 'value_prop'));
+      grid.appendChild(c);
+    });
+  }
+
+  // ---- Channels ----
+  function renderChannels() {
+    var grid = document.getElementById('channelGrid');
+    grid.innerHTML = '';
+    state.channels.forEach(function(ch) {
+      var c = document.createElement('div');
+      c.className = 'card';
+
+      var title = makeEditable('input', ch.name, 'channels', ch.id, 'name');
+      c.appendChild(title);
+
+      var row = document.createElement('div');
+      row.className = 'pill-row';
+
+      var prioritySel = document.createElement('select');
+      prioritySel.className = 'select-pill';
+      ['HIGH','MED','LOW'].forEach(function(v) {
+        var o = document.createElement('option'); o.value = v; o.textContent = v;
+        if (v === ch.priority) o.selected = true;
+        prioritySel.appendChild(o);
+      });
+      applyPill(prioritySel, ch.priority);
+      prioritySel.addEventListener('change', function() {
+        applyPill(prioritySel, prioritySel.value);
+        queueSave('channels', ch.id, 'priority', prioritySel.value);
+      });
+
+      var statusSel = document.createElement('select');
+      statusSel.className = 'select-pill';
+      ['active','planning','paused'].forEach(function(v) {
+        var o = document.createElement('option'); o.value = v; o.textContent = v;
+        if (v === ch.status) o.selected = true;
+        statusSel.appendChild(o);
+      });
+      applyStatusPill(statusSel, ch.status);
+      statusSel.addEventListener('change', function() {
+        applyStatusPill(statusSel, statusSel.value);
+        queueSave('channels', ch.id, 'status', statusSel.value);
+      });
+
+      row.appendChild(prioritySel);
+      row.appendChild(statusSel);
+      c.appendChild(row);
+
+      c.appendChild(makeLabel('Motion'));
+      c.appendChild(makeEditable('textarea', ch.motion, 'channels', ch.id, 'motion'));
+      c.appendChild(makeLabel('Next Action'));
+      c.appendChild(makeEditable('textarea', ch.next_action, 'channels', ch.id, 'next_action'));
+      grid.appendChild(c);
+    });
+  }
+
+  function applyPill(el, v) {
+    el.style.background = '';
+    el.style.color = '';
+    if (v === 'HIGH') { el.style.background = 'rgba(233,69,96,0.18)'; el.style.color = '#ff8096'; }
+    else if (v === 'MED') { el.style.background = 'rgba(233,166,69,0.18)'; el.style.color = '#f5c77a'; }
+    else { el.style.background = 'rgba(107,115,144,0.2)'; el.style.color = '#a9b0c2'; }
+  }
+  function applyStatusPill(el, v) {
+    el.style.background = '';
+    el.style.color = '';
+    if (v === 'active') { el.style.background = 'rgba(63,183,122,0.18)'; el.style.color = '#66d99b'; }
+    else if (v === 'planning') { el.style.background = 'rgba(91,138,233,0.18)'; el.style.color = '#8fb0ef'; }
+    else { el.style.background = 'rgba(107,115,144,0.2)'; el.style.color = '#a9b0c2'; }
+  }
+
+  // ---- Accounts (Kanban) ----
+  function renderAccounts() {
+    ['prospect','researching','contacted','meeting','won','lost'].forEach(function(stage) {
+      var col = document.querySelector('.kcol[data-stage="' + stage + '"]');
+      // Clear cards but keep header
+      var head = col.querySelector('.kcol-head');
+      col.innerHTML = '';
+      col.appendChild(head);
+    });
+    var counts = { prospect:0, researching:0, contacted:0, meeting:0, won:0, lost:0 };
+    state.accounts.forEach(function(a) {
+      var stage = a.stage || 'prospect';
+      counts[stage] = (counts[stage] || 0) + 1;
+      var col = document.querySelector('.kcol[data-stage="' + stage + '"]');
+      if (!col) return;
+      col.appendChild(buildAccountCard(a));
+    });
+    Object.keys(counts).forEach(function(k) {
+      var el = document.querySelector('[data-count="' + k + '"]');
+      if (el) el.textContent = counts[k];
+    });
+  }
+
+  function buildAccountCard(a) {
+    var card = document.createElement('div');
+    card.className = 'kcard';
+    card.draggable = true;
+    card.dataset.id = a.id;
+
+    var view = document.createElement('div');
+    view.className = 'kcard-view';
+    var co = document.createElement('div'); co.className = 'company'; co.textContent = a.company;
+    var cat = document.createElement('div'); cat.className = 'cat'; cat.textContent = a.category || '';
+    var note = document.createElement('div'); note.className = 'note'; note.textContent = a.notes || '';
+    view.appendChild(co); view.appendChild(cat); view.appendChild(note);
+
+    var row = document.createElement('div'); row.className = 'row';
+    var editBtn = document.createElement('button'); editBtn.className = 'mini-btn'; editBtn.textContent = 'Edit';
+    var delBtn = document.createElement('button'); delBtn.className = 'mini-btn danger'; delBtn.textContent = 'Remove';
+    row.appendChild(editBtn); row.appendChild(delBtn);
+    view.appendChild(row);
+
+    var edit = document.createElement('div');
+    edit.className = 'kcard-edit';
+    var ein = makeEditable('input', a.company, 'accounts', a.id, 'company');
+    var ecat = makeEditable('input', a.category, 'accounts', a.id, 'category', 'Category');
+    ecat.style.fontSize = '12px'; ecat.style.color = 'var(--text-muted)';
+    var enote = makeEditable('textarea', a.notes, 'accounts', a.id, 'notes', 'Notes, signals, context');
+    edit.appendChild(ein); edit.appendChild(ecat); edit.appendChild(enote);
+    var doneBtn = document.createElement('button'); doneBtn.className = 'mini-btn'; doneBtn.textContent = 'Done';
+    doneBtn.style.marginTop = '8px';
+    edit.appendChild(doneBtn);
+
+    card.appendChild(view); card.appendChild(edit);
+
+    editBtn.addEventListener('click', function(e) {
+      e.stopPropagation(); card.classList.add('editing'); card.draggable = false;
+    });
+    doneBtn.addEventListener('click', function() {
+      card.classList.remove('editing'); card.draggable = true;
+      co.textContent = ein.value; cat.textContent = ecat.value; note.textContent = enote.value;
+    });
+    delBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (!confirm('Remove ' + a.company + ' from the board?')) return;
+      fetch('/api/accounts/' + a.id, { method: 'DELETE' }).then(function(r) { return r.json(); }).then(function(j) {
+        if (j.ok) { state.accounts = state.accounts.filter(function(x) { return x.id !== a.id; }); renderAccounts(); }
+      });
+    });
+
+    card.addEventListener('dragstart', function(e) {
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', a.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', function() { card.classList.remove('dragging'); });
+
+    return card;
+  }
+
+  // Kanban dropzones
+  document.querySelectorAll('.kcol').forEach(function(col) {
+    col.addEventListener('dragover', function(e) {
+      e.preventDefault(); col.classList.add('dragover');
+    });
+    col.addEventListener('dragleave', function() { col.classList.remove('dragover'); });
+    col.addEventListener('drop', function(e) {
+      e.preventDefault(); col.classList.remove('dragover');
+      var id = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      var newStage = col.dataset.stage;
+      var acc = state.accounts.find(function(x) { return x.id === id; });
+      if (!acc || acc.stage === newStage) return;
+      acc.stage = newStage;
+      renderAccounts();
+      showSaving();
+      fetch('/api/accounts/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: newStage })
+      }).then(function(r) { return r.json(); }).then(function(j) {
+        if (j.ok) showSaved(); else showError(j.error);
+      });
+    });
+  });
+
+  // ---- Modal + Toast helpers ----
+  var modal = document.getElementById('modalBackdrop');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalSub = document.getElementById('modalSub');
+  var modalFields = document.getElementById('modalFields');
+  var modalCancel = document.getElementById('modalCancel');
+  var modalSubmit = document.getElementById('modalSubmit');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+
+  function showToast(msg, kind) {
+    toast.textContent = msg;
+    toast.className = 'toast show ' + (kind || 'success');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3200);
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modalFields.innerHTML = '';
+    modalSubmit.disabled = false;
+    modalSubmit.textContent = 'Add';
+  }
+  modalCancel.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  function openModal(opts) {
+    modalTitle.textContent = opts.title;
+    modalSub.textContent = opts.sub;
+    modalFields.innerHTML = '';
+    var inputs = {};
+    opts.fields.forEach(function(f) {
+      var label = document.createElement('label');
+      label.textContent = f.label;
+      modalFields.appendChild(label);
+      var el = document.createElement(f.type === 'textarea' ? 'textarea' : 'input');
+      if (f.placeholder) el.placeholder = f.placeholder;
+      if (f.type === 'textarea' && f.rows) el.rows = f.rows;
+      modalFields.appendChild(el);
+      inputs[f.key] = el;
+    });
+    modalSubmit.onclick = function() {
+      var payload = {};
+      var ok = true;
+      opts.fields.forEach(function(f) {
+        var v = (inputs[f.key].value || '').trim();
+        if (f.required && !v) { ok = false; inputs[f.key].style.borderColor = 'var(--accent)'; }
+        payload[f.key] = v;
+      });
+      if (!ok) { showToast('Required field missing', 'error'); return; }
+      modalSubmit.disabled = true;
+      modalSubmit.textContent = 'Saving\u2026';
+      opts.submit(payload).then(function() {
+        closeModal();
+      }).catch(function(err) {
+        modalSubmit.disabled = false;
+        modalSubmit.textContent = 'Add';
+        showToast('Save failed: ' + (err && err.message ? err.message : 'network error'), 'error');
+      });
+    };
+    modal.classList.add('open');
+    setTimeout(function() {
+      var first = modalFields.querySelector('input, textarea');
+      if (first) first.focus();
+    }, 50);
+  }
+
+  function postJSON(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(j) {
+      if (!j.ok) throw new Error(j.error || 'Server rejected');
+      return j;
+    });
+  }
+
+  // Add account
+  document.getElementById('addAccountBtn').addEventListener('click', function() {
+    openModal({
+      title: 'Add Target Account',
+      sub: 'Capture the company and any signal you already have. You can fill the rest on the card.',
+      fields: [
+        { key: 'company', label: 'Company *', type: 'input', placeholder: 'e.g. Viktor', required: true },
+        { key: 'category', label: 'Category', type: 'input', placeholder: 'e.g. AI / Workforce Automation' },
+        { key: 'notes', label: 'Notes / signal / why now', type: 'textarea', placeholder: 'Why this account, who backs it, fit thesis...', rows: 4 }
+      ],
+      submit: function(p) {
+        return postJSON('/api/accounts', { company: p.company, category: p.category, stage: 'prospect', notes: p.notes }).then(function(j) {
+          state.accounts.push(j.row);
+          renderAccounts();
+          showToast(p.company + ' added to the board', 'success');
+        });
+      }
+    });
+  });
+
+  // ---- Pitches ----
+  function pitchStatusColor(s) {
+    if (s === 'drafting') return { bg: 'rgba(91,138,233,0.18)', fg: '#8fb0ef' };
+    if (s === 'sent') return { bg: 'rgba(233,166,69,0.18)', fg: '#f5c77a' };
+    if (s === 'meeting') return { bg: 'rgba(63,183,122,0.18)', fg: '#66d99b' };
+    if (s === 'won') return { bg: 'rgba(63,183,122,0.32)', fg: '#9ff0bf' };
+    if (s === 'passed') return { bg: 'rgba(107,115,144,0.2)', fg: '#a9b0c2' };
+    return { bg: 'rgba(107,115,144,0.2)', fg: '#a9b0c2' };
+  }
+
+  function renderPitches() {
+    var list = document.getElementById('pitchList');
+    list.innerHTML = '';
+    if (!state.pitches.length) {
+      var empty = document.createElement('div');
+      empty.style.cssText = 'color:var(--text-muted); font-size:13px; padding:24px; text-align:center; border:1px dashed var(--border); border-radius:12px;';
+      empty.textContent = 'No pitches yet. Start one with + New Pitch.';
+      list.appendChild(empty);
+      return;
+    }
+    state.pitches.forEach(function(p) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.style.marginBottom = '16px';
+
+      // Header row: company + play + status + actions
+      var head = document.createElement('div');
+      head.style.cssText = 'display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:8px;';
+
+      var left = document.createElement('div');
+      left.style.flex = '1';
+      var company = makeEditable('input', p.target_company, 'pitches', p.id, 'target_company');
+      company.style.fontSize = '18px';
+      left.appendChild(company);
+      var playLine = document.createElement('div');
+      playLine.style.cssText = 'font-size:11.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-top:2px; font-family:Space Grotesk;';
+      playLine.textContent = (p.play || 'Signature Activation Pitch');
+      left.appendChild(playLine);
+      head.appendChild(left);
+
+      var right = document.createElement('div');
+      right.style.cssText = 'display:flex; gap:8px; align-items:center;';
+
+      var statusSel = document.createElement('select');
+      statusSel.className = 'select-pill';
+      ['drafting','sent','meeting','won','passed'].forEach(function(v) {
+        var o = document.createElement('option'); o.value = v; o.textContent = v;
+        if (v === p.status) o.selected = true;
+        statusSel.appendChild(o);
+      });
+      var col = pitchStatusColor(p.status);
+      statusSel.style.background = col.bg; statusSel.style.color = col.fg;
+      statusSel.addEventListener('change', function() {
+        var c = pitchStatusColor(statusSel.value);
+        statusSel.style.background = c.bg; statusSel.style.color = c.fg;
+        queueSave('pitches', p.id, 'status', statusSel.value);
+      });
+      right.appendChild(statusSel);
+
+      var del = document.createElement('button'); del.className = 'mini-btn danger'; del.textContent = 'Remove';
+      del.addEventListener('click', function() {
+        if (!confirm('Remove this pitch?')) return;
+        fetch('/api/pitches/' + p.id, { method: 'DELETE' }).then(function(r) { return r.json(); }).then(function(j) {
+          if (j.ok) { state.pitches = state.pitches.filter(function(x) { return x.id !== p.id; }); renderPitches(); }
+        });
+      });
+      right.appendChild(del);
+      head.appendChild(right);
+      card.appendChild(head);
+
+      // Concept title + one-liner
+      card.appendChild(makeLabel('Concept Title'));
+      card.appendChild(makeEditable('input', p.concept_title, 'pitches', p.id, 'concept_title', 'e.g. The Oat Report'));
+
+      card.appendChild(makeLabel('One-liner'));
+      var oneLiner = makeEditable('textarea', p.one_liner, 'pitches', p.id, 'one_liner', 'The single sentence that sells the idea.');
+      oneLiner.style.minHeight = '50px';
+      card.appendChild(oneLiner);
+
+      // Pitch deck URL — online slide deck link (HTML deck, Pitch.com, etc).
+      // Label row includes a live "Open deck ↗" link that appears when a URL is set.
+      var deckLabelRow = document.createElement('div');
+      deckLabelRow.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:12px;';
+      var deckLabel = makeLabel('Pitch Deck URL');
+      deckLabel.style.margin = '0';
+      deckLabelRow.appendChild(deckLabel);
+      var deckOpen = document.createElement('a');
+      deckOpen.target = '_blank';
+      deckOpen.rel = 'noopener noreferrer';
+      deckOpen.textContent = 'Open deck \u2197';
+      deckOpen.style.cssText = 'font-size:11.5px; font-family:Space Grotesk; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); padding:4px 10px; border:1px solid var(--accent); border-radius:6px;';
+      function syncDeckOpen(v) {
+        if (v && /^https?:\/\//i.test(v)) {
+          deckOpen.href = v;
+          deckOpen.style.display = 'inline-block';
+        } else {
+          deckOpen.style.display = 'none';
+        }
+      }
+      syncDeckOpen(p.pitch_deck_url);
+      deckLabelRow.appendChild(deckOpen);
+      card.appendChild(deckLabelRow);
+      var deckInput = makeEditable('input', p.pitch_deck_url || '', 'pitches', p.id, 'pitch_deck_url', 'https://… (online slide deck, Pitch.com, HTML deck, etc.)');
+      deckInput.addEventListener('input', function() { syncDeckOpen(deckInput.value); });
+      card.appendChild(deckInput);
+
+      // Two column: concept | outbound
+      var two = document.createElement('div');
+      two.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:12px;';
+
+      var conceptCol = document.createElement('div');
+      conceptCol.appendChild(makeLabel('Concept'));
+      var concept = makeEditable('textarea', p.concept, 'pitches', p.id, 'concept');
+      concept.style.minHeight = '260px';
+      concept.style.fontFamily = "'Space Grotesk', monospace";
+      concept.style.fontSize = '12.5px';
+      conceptCol.appendChild(concept);
+
+      var outboundCol = document.createElement('div');
+      var outboundLabelRow = document.createElement('div');
+      outboundLabelRow.style.cssText = 'display:flex; justify-content:space-between; align-items:center;';
+      var outboundLabel = makeLabel('Outbound Draft');
+      outboundLabel.style.margin = '12px 0 4px';
+      outboundLabelRow.appendChild(outboundLabel);
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'mini-btn';
+      copyBtn.textContent = 'Copy email';
+      copyBtn.addEventListener('click', function() {
+        var draft = outbound.value || '';
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(draft).then(function() {
+            var orig = copyBtn.textContent;
+            copyBtn.textContent = 'Copied \u2713';
+            setTimeout(function() { copyBtn.textContent = orig; }, 1600);
+          });
+        }
+      });
+      outboundLabelRow.appendChild(copyBtn);
+      outboundCol.appendChild(outboundLabelRow);
+      var outbound = makeEditable('textarea', p.outbound_draft, 'pitches', p.id, 'outbound_draft');
+      outbound.style.minHeight = '260px';
+      outbound.style.fontFamily = "'Space Grotesk', monospace";
+      outbound.style.fontSize = '12.5px';
+      outboundCol.appendChild(outbound);
+
+      two.appendChild(conceptCol);
+      two.appendChild(outboundCol);
+      card.appendChild(two);
+
+      // Contact + next action
+      var foot = document.createElement('div');
+      foot.style.cssText = 'display:grid; grid-template-columns:1fr 1fr 2fr; gap:12px; margin-top:12px;';
+
+      var cn = document.createElement('div');
+      cn.appendChild(makeLabel('Contact Name'));
+      cn.appendChild(makeEditable('input', p.contact_name, 'pitches', p.id, 'contact_name', 'e.g. Jane Doe'));
+
+      var cr = document.createElement('div');
+      cr.appendChild(makeLabel('Contact Role'));
+      cr.appendChild(makeEditable('input', p.contact_role, 'pitches', p.id, 'contact_role', 'e.g. Head of Brand'));
+
+      var na = document.createElement('div');
+      na.appendChild(makeLabel('Next Action'));
+      na.appendChild(makeEditable('textarea', p.next_action, 'pitches', p.id, 'next_action'));
+
+      foot.appendChild(cn); foot.appendChild(cr); foot.appendChild(na);
+      card.appendChild(foot);
+
+      list.appendChild(card);
+    });
+  }
+
+  document.getElementById('addPitchBtn').addEventListener('click', function() {
+    openModal({
+      title: 'New Pitch',
+      sub: 'Just enough to start. You can flesh out the concept and email on the card.',
+      fields: [
+        { key: 'target_company', label: 'Target Company *', type: 'input', placeholder: 'e.g. Mercury', required: true },
+        { key: 'concept_title', label: 'Concept Title', type: 'input', placeholder: 'e.g. Mercury House' },
+        { key: 'one_liner', label: 'One-liner', type: 'textarea', placeholder: 'The single sentence that sells the idea.', rows: 3 }
+      ],
+      submit: function(p) {
+        return postJSON('/api/pitches', {
+          target_company: p.target_company,
+          play: 'Signature Activation Pitch',
+          concept_title: p.concept_title,
+          one_liner: p.one_liner,
+          status: 'drafting'
+        }).then(function(j) {
+          state.pitches.unshift(j.row);
+          renderPitches();
+          showToast(p.target_company + ' pitch started', 'success');
+        });
+      }
+    });
+  });
+
+  // ---- Quick Ideas ----
+  function qiStatusColor(s) {
+    if (s === 'sketch')   return { bg: 'rgba(91,138,233,0.18)',  fg: '#8fb0ef' };
+    if (s === 'refining') return { bg: 'rgba(233,166,69,0.18)',  fg: '#f5c77a' };
+    if (s === 'promoted') return { bg: 'rgba(63,183,122,0.18)',  fg: '#66d99b' };
+    return { bg: 'rgba(107,115,144,0.2)', fg: '#a9b0c2' };
+  }
+
+  function renderQuickIdeas() {
+    var list = document.getElementById('quickIdeasList');
+    list.innerHTML = '';
+    if (!state.quick_ideas.length) {
+      var empty = document.createElement('div');
+      empty.className = 'qi-empty';
+      empty.textContent = 'No quick ideas yet. Sketch one with + New Quick Idea.';
+      list.appendChild(empty);
+      return;
+    }
+
+    // Group by account_id
+    var groups = {};
+    state.quick_ideas.forEach(function(qi) {
+      var key = qi.account_id == null ? 'unassigned' : String(qi.account_id);
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(qi);
+    });
+
+    // Render in account display order: follow state.accounts ordering, then unassigned at the end
+    var orderedKeys = [];
+    state.accounts.forEach(function(a) {
+      var k = String(a.id);
+      if (groups[k]) orderedKeys.push(k);
+    });
+    if (groups['unassigned']) orderedKeys.push('unassigned');
+    // Any orphan ideas whose account was deleted but key still present
+    Object.keys(groups).forEach(function(k) {
+      if (orderedKeys.indexOf(k) === -1) orderedKeys.push(k);
+    });
+
+    orderedKeys.forEach(function(key) {
+      var ideas = groups[key];
+      var account = (key === 'unassigned') ? null : state.accounts.find(function(a) { return String(a.id) === key; });
+      var group = document.createElement('div');
+      group.className = 'qi-account-group';
+
+      var head = document.createElement('div');
+      head.className = 'qi-account-header';
+      var headLeft = document.createElement('div');
+      var h3 = document.createElement('h3');
+      h3.textContent = account ? account.company : 'Unassigned';
+      headLeft.appendChild(h3);
+      if (account && account.category) {
+        var meta = document.createElement('div');
+        meta.style.cssText = 'font-size:11.5px; color:var(--text-muted); margin-top:2px;';
+        meta.textContent = account.category;
+        headLeft.appendChild(meta);
+      }
+      var headRight = document.createElement('div');
+      headRight.className = 'qi-account-meta';
+      headRight.textContent = ideas.length + ' ' + (ideas.length === 1 ? 'idea' : 'ideas');
+      head.appendChild(headLeft); head.appendChild(headRight);
+      group.appendChild(head);
+
+      var grid = document.createElement('div');
+      grid.className = 'qi-grid';
+      ideas.forEach(function(qi) { grid.appendChild(buildQuickIdeaCard(qi)); });
+      group.appendChild(grid);
+
+      list.appendChild(group);
+    });
+  }
+
+  function buildQuickIdeaCard(qi) {
+    var card = document.createElement('div');
+    card.className = 'qi-card' + (qi.status === 'promoted' ? ' promoted' : '');
+
+    var head = document.createElement('div');
+    head.className = 'qi-card-head';
+
+    var left = document.createElement('div');
+    left.className = 'qi-card-head-left';
+    var title = makeEditable('input', qi.title, 'quick-ideas', qi.id, 'title', 'Idea title');
+    title.style.fontSize = '15px';
+    left.appendChild(title);
+
+    var right = document.createElement('div');
+    right.className = 'qi-card-head-right';
+
+    var statusSel = document.createElement('select');
+    statusSel.className = 'select-pill';
+    ['sketch','refining','promoted'].forEach(function(v) {
+      var o = document.createElement('option'); o.value = v; o.textContent = v;
+      if (v === qi.status) o.selected = true;
+      statusSel.appendChild(o);
+    });
+    var c = qiStatusColor(qi.status);
+    statusSel.style.background = c.bg; statusSel.style.color = c.fg;
+    statusSel.addEventListener('change', function() {
+      var nc = qiStatusColor(statusSel.value);
+      statusSel.style.background = nc.bg; statusSel.style.color = nc.fg;
+      qi.status = statusSel.value;
+      if (statusSel.value === 'promoted') card.classList.add('promoted'); else card.classList.remove('promoted');
+      queueSave('quick-ideas', qi.id, 'status', statusSel.value);
+    });
+    right.appendChild(statusSel);
+
+    var promoteBtn = document.createElement('button');
+    promoteBtn.className = 'mini-btn';
+    promoteBtn.textContent = 'Promote → Pitch';
+    promoteBtn.title = 'Create a full Pitch row from this idea and mark this idea as promoted';
+    promoteBtn.addEventListener('click', function() {
+      var acct = state.accounts.find(function(a) { return a.id === qi.account_id; });
+      var company = acct ? acct.company : '';
+      if (!confirm('Promote "' + (qi.title || 'this idea') + '" to a full pitch on the Pitches tab?')) return;
+      promoteBtn.disabled = true; promoteBtn.textContent = 'Promoting…';
+      postJSON('/api/pitches', {
+        target_company: company,
+        play: 'Signature Activation Pitch',
+        concept_title: qi.title || '',
+        one_liner: qi.one_liner || '',
+        concept: qi.summary || '',
+        status: 'drafting'
+      }).then(function(j) {
+        state.pitches.unshift(j.row);
+        // Mark idea promoted (history)
+        return fetch('/api/quick-ideas/' + qi.id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'promoted' })
+        }).then(function(r) { return r.json(); });
+      }).then(function() {
+        qi.status = 'promoted';
+        renderQuickIdeas();
+        renderPitches();
+        showToast('Promoted to Pitches tab', 'success');
+      }).catch(function(err) {
+        promoteBtn.disabled = false; promoteBtn.textContent = 'Promote → Pitch';
+        showToast('Promote failed: ' + (err && err.message ? err.message : 'network'), 'error');
+      });
+    });
+    right.appendChild(promoteBtn);
+
+    var del = document.createElement('button');
+    del.className = 'mini-btn danger';
+    del.textContent = '×';
+    del.title = 'Delete this idea';
+    del.addEventListener('click', function() {
+      if (!confirm('Delete this idea?')) return;
+      fetch('/api/quick-ideas/' + qi.id, { method: 'DELETE' }).then(function(r) { return r.json(); }).then(function(j) {
+        if (j.ok) {
+          state.quick_ideas = state.quick_ideas.filter(function(x) { return x.id !== qi.id; });
+          renderQuickIdeas();
+        }
+      });
+    });
+    right.appendChild(del);
+
+    head.appendChild(left); head.appendChild(right);
+    card.appendChild(head);
+
+    card.appendChild(makeLabel('One-liner'));
+    var ol = makeEditable('textarea', qi.one_liner, 'quick-ideas', qi.id, 'one_liner', 'The single sentence sketch.');
+    ol.style.minHeight = '44px';
+    card.appendChild(ol);
+
+    card.appendChild(makeLabel('Summary'));
+    var sum = makeEditable('textarea', qi.summary, 'quick-ideas', qi.id, 'summary', '2-3 paragraphs. What it is, why it works, when to use it.');
+    sum.style.minHeight = '160px';
+    sum.style.fontFamily = "'Space Grotesk', monospace";
+    sum.style.fontSize = '12.5px';
+    card.appendChild(sum);
+
+    return card;
+  }
+
+  document.getElementById('addQuickIdeaBtn').addEventListener('click', function() {
+    if (!state.accounts.length) {
+      showToast('Add an account first — every idea belongs to an account.', 'error');
+      return;
+    }
+    // Build modal manually so we get an account picker (select) instead of a plain input
+    modalTitle.textContent = 'New Quick Idea';
+    modalSub.textContent = 'A sketch that lives next to its parent account. Promote it to a full pitch when it grows up.';
+    modalFields.innerHTML = '';
+
+    var lblAcct = document.createElement('label'); lblAcct.textContent = 'Account *';
+    modalFields.appendChild(lblAcct);
+    var acctSel = document.createElement('select');
+    acctSel.style.cssText = 'width:100%; background:rgba(15,16,32,0.6); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:Inter; font-size:13.5px; padding:10px 12px;';
+    state.accounts.forEach(function(a) {
+      var o = document.createElement('option'); o.value = a.id; o.textContent = a.company;
+      acctSel.appendChild(o);
+    });
+    modalFields.appendChild(acctSel);
+
+    var lblT = document.createElement('label'); lblT.textContent = 'Title *';
+    modalFields.appendChild(lblT);
+    var titleIn = document.createElement('input'); titleIn.placeholder = 'e.g. The 2027 Index';
+    modalFields.appendChild(titleIn);
+
+    var lblOl = document.createElement('label'); lblOl.textContent = 'One-liner';
+    modalFields.appendChild(lblOl);
+    var olIn = document.createElement('textarea'); olIn.rows = 2; olIn.placeholder = 'The single sentence sketch.';
+    modalFields.appendChild(olIn);
+
+    var lblSum = document.createElement('label'); lblSum.textContent = 'Summary';
+    modalFields.appendChild(lblSum);
+    var sumIn = document.createElement('textarea'); sumIn.rows = 4; sumIn.placeholder = '2-3 paragraphs (optional). You can fill this out on the card.';
+    modalFields.appendChild(sumIn);
+
+    modalSubmit.disabled = false; modalSubmit.textContent = 'Add';
+    modalSubmit.onclick = function() {
+      var title = (titleIn.value || '').trim();
+      if (!title) { titleIn.style.borderColor = 'var(--accent)'; showToast('Title required', 'error'); return; }
+      modalSubmit.disabled = true; modalSubmit.textContent = 'Saving…';
+      postJSON('/api/quick-ideas', {
+        account_id: parseInt(acctSel.value, 10),
+        title: title,
+        one_liner: (olIn.value || '').trim(),
+        summary: (sumIn.value || '').trim(),
+        status: 'sketch'
+      }).then(function(j) {
+        state.quick_ideas.unshift(j.row);
+        renderQuickIdeas();
+        showToast('Idea sketched', 'success');
+        closeModal();
+      }).catch(function(err) {
+        modalSubmit.disabled = false; modalSubmit.textContent = 'Add';
+        showToast('Save failed: ' + (err && err.message ? err.message : 'network'), 'error');
+      });
+    };
+    modal.classList.add('open');
+    setTimeout(function() { titleIn.focus(); }, 50);
+  });
+
+  // ---- Playbooks ----
+  function renderPlaybooks() {
+    var grid = document.getElementById('playbookGrid');
+    grid.innerHTML = '';
+    state.playbooks.forEach(function(p) {
+      var c = document.createElement('div');
+      c.className = 'card';
+      c.appendChild(makeEditable('input', p.title, 'playbooks', p.id, 'title'));
+      c.appendChild(makeLabel('Summary'));
+      c.appendChild(makeEditable('textarea', p.summary, 'playbooks', p.id, 'summary'));
+      c.appendChild(makeLabel('Steps'));
+      var steps = makeEditable('textarea', p.steps, 'playbooks', p.id, 'steps');
+      steps.style.minHeight = '120px';
+      c.appendChild(steps);
+      grid.appendChild(c);
+    });
+  }
+
+  // ---- Notes ----
+  function renderNotes() {
+    var list = document.getElementById('notesList');
+    list.innerHTML = '';
+    if (!state.notes.length) {
+      var empty = document.createElement('div');
+      empty.style.cssText = 'color:var(--text-muted); font-size:13px; padding:16px; text-align:center;';
+      empty.textContent = 'No notes yet. Add the first thought above.';
+      list.appendChild(empty);
+      return;
+    }
+    state.notes.forEach(function(n) {
+      var item = document.createElement('div');
+      item.className = 'note-item';
+      var body = document.createElement('div');
+      body.style.flex = '1';
+      var bod = document.createElement('div'); bod.className = 'body'; bod.textContent = n.body;
+      var stamp = document.createElement('div'); stamp.className = 'stamp';
+      stamp.textContent = new Date(n.created_at).toLocaleString();
+      body.appendChild(bod); body.appendChild(stamp);
+      var del = document.createElement('button'); del.className = 'mini-btn danger'; del.textContent = '×';
+      del.addEventListener('click', function() {
+        fetch('/api/notes/' + n.id, { method: 'DELETE' }).then(function(r) { return r.json(); }).then(function(j) {
+          if (j.ok) { state.notes = state.notes.filter(function(x) { return x.id !== n.id; }); renderNotes(); }
+        });
+      });
+      item.appendChild(body); item.appendChild(del);
+      list.appendChild(item);
+    });
+  }
+
+  document.getElementById('addNoteBtn').addEventListener('click', function() {
+    var ta = document.getElementById('noteBody');
+    var val = ta.value.trim();
+    if (!val) return;
+    fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body: val })
+    }).then(function(r) { return r.json(); }).then(function(j) {
+      if (j.ok) { state.notes.unshift(j.row); ta.value = ''; renderNotes(); }
+      else showError(j.error);
+    });
+  });
+
+  // ---- Bootstrap ----
+  function loadState() {
+    fetch('/api/state').then(function(r) { return r.json(); }).then(function(j) {
+      if (!j.ok) { showError(j.error); return; }
+      state = { personas: j.personas, channels: j.channels, accounts: j.accounts, playbooks: j.playbooks, notes: j.notes, pitches: j.pitches || [], quick_ideas: j.quick_ideas || [] };
+      renderPersonas();
+      renderChannels();
+      renderAccounts();
+      renderPitches();
+      renderQuickIdeas();
+      renderPlaybooks();
+      renderNotes();
+    }).catch(function() { showError('Load failed'); });
+  }
+
+  loadState();
+})();
+</script>
+
+</body>
+</html>
