@@ -489,7 +489,10 @@
         <h2>Active Pitches</h2>
         <div class="sub">Concept-led pitches for named brands. One hero idea per target. Draft &rarr; sent &rarr; meeting &rarr; won.</div>
       </div>
-      <button class="btn" id="addPitchBtn">+ New Pitch</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-ghost" id="downloadPitchesBtn" title="Download all pitches as a Markdown doc">&#x2193; Download all</button>
+        <button class="btn" id="addPitchBtn">+ New Pitch</button>
+      </div>
     </div>
     <div id="pitchList"></div>
   </section>
@@ -501,7 +504,10 @@
         <h2>Quick Ideas</h2>
         <div class="sub">Half-formed sketches by account. Negotiation leverage for the big pitch &mdash; promote any one of these into a full Pitch when it's ready to lead.</div>
       </div>
-      <button class="btn" id="addQuickIdeaBtn">+ New Quick Idea</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-ghost" id="downloadQuickIdeasBtn" title="Download all quick ideas as a Markdown doc">&#x2193; Download all</button>
+        <button class="btn" id="addQuickIdeaBtn">+ New Quick Idea</button>
+      </div>
     </div>
     <div id="quickIdeasList"></div>
   </section>
@@ -588,6 +594,9 @@
   // ---- Debounced save ----
   function queueSave(table, id, field, value) {
     var key = table + ':' + id + ':' + field;
+    // Keep in-memory state in sync so re-renders and doc exports reflect edits.
+    var arr = (table === 'quick-ideas') ? state.quick_ideas : state[table];
+    if (arr) { var row = arr.find(function(x) { return String(x.id) === String(id); }); if (row) row[field] = value; }
     if (saveTimers[key]) clearTimeout(saveTimers[key]);
     showSaving();
     saveTimers[key] = setTimeout(function() {
@@ -930,6 +939,68 @@
     return { bg: 'rgba(107,115,144,0.2)', fg: '#a9b0c2' };
   }
 
+  // ---- Doc export (Markdown) — pipe Pitches / Quick Ideas into a slide tool ----
+  function mdText(s) { return (s == null ? '' : String(s)).replace(/\r\n/g, '\n').trim(); }
+  function slugify(s) {
+    return (mdText(s) || 'untitled').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'untitled';
+  }
+  function today() { return new Date().toISOString().slice(0, 10); }
+  function downloadDoc(filename, text) {
+    var blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+  }
+  function accountNameById(id) {
+    if (id == null) return '';
+    var a = state.accounts.find(function(x) { return String(x.id) === String(id); });
+    return a ? a.company : '';
+  }
+  function section(title, body) { var b = mdText(body); return b ? ('## ' + title + '\n' + b + '\n\n') : ''; }
+  function pitchToMarkdown(p) {
+    var out = '# ' + (mdText(p.concept_title) || mdText(p.target_company) || 'Untitled Pitch') + '\n\n';
+    var meta = [];
+    if (mdText(p.target_company)) meta.push('**Target:** ' + mdText(p.target_company));
+    if (mdText(p.play)) meta.push('**Play:** ' + mdText(p.play));
+    if (mdText(p.status)) meta.push('**Status:** ' + mdText(p.status));
+    if (meta.length) out += meta.join('  \n') + '\n\n';
+    out += section('One-liner', p.one_liner);
+    out += section('Concept', p.concept);
+    out += section('Outbound Draft', p.outbound_draft);
+    var contact = [mdText(p.contact_name), mdText(p.contact_role)].filter(Boolean).join(' — ');
+    out += section('Contact', contact);
+    out += section('Next Action', p.next_action);
+    if (mdText(p.pitch_deck_url)) out += '**Pitch deck:** ' + mdText(p.pitch_deck_url) + '\n\n';
+    return out.trim() + '\n';
+  }
+  function quickIdeaToMarkdown(qi) {
+    var out = '# ' + (mdText(qi.title) || 'Untitled Idea') + '\n\n';
+    var meta = [];
+    var acct = accountNameById(qi.account_id);
+    if (acct) meta.push('**Account:** ' + acct);
+    if (mdText(qi.status)) meta.push('**Status:** ' + mdText(qi.status));
+    if (meta.length) out += meta.join('  \n') + '\n\n';
+    out += section('One-liner', qi.one_liner);
+    out += section('Summary', qi.summary);
+    return out.trim() + '\n';
+  }
+  function downloadAllPitches() {
+    if (!state.pitches.length) { showToast('No pitches to download', 'error'); return; }
+    var doc = '# Pitch Box — Active Pitches\n\n_Exported ' + today() + ' · ' + state.pitches.length + ' pitches_\n\n';
+    doc += state.pitches.map(pitchToMarkdown).join('\n---\n\n');
+    downloadDoc('pitch-box-pitches-' + today() + '.md', doc);
+  }
+  function downloadAllQuickIdeas() {
+    if (!state.quick_ideas.length) { showToast('No quick ideas to download', 'error'); return; }
+    var doc = '# Pitch Box — Quick Ideas\n\n_Exported ' + today() + ' · ' + state.quick_ideas.length + ' ideas_\n\n';
+    doc += state.quick_ideas.map(quickIdeaToMarkdown).join('\n---\n\n');
+    downloadDoc('pitch-box-quick-ideas-' + today() + '.md', doc);
+  }
+  document.getElementById('downloadPitchesBtn').addEventListener('click', downloadAllPitches);
+  document.getElementById('downloadQuickIdeasBtn').addEventListener('click', downloadAllQuickIdeas);
+
   function renderPitches() {
     var list = document.getElementById('pitchList');
     list.innerHTML = '';
@@ -978,6 +1049,13 @@
         queueSave('pitches', p.id, 'status', statusSel.value);
       });
       right.appendChild(statusSel);
+
+      var dlPitch = document.createElement('button'); dlPitch.className = 'mini-btn'; dlPitch.textContent = '↓ Doc';
+      dlPitch.title = 'Download this pitch as a Markdown doc';
+      dlPitch.addEventListener('click', function() {
+        downloadDoc(slugify(p.concept_title || p.target_company) + '.md', pitchToMarkdown(p));
+      });
+      right.appendChild(dlPitch);
 
       var del = document.createElement('button'); del.className = 'mini-btn danger'; del.textContent = 'Remove';
       del.addEventListener('click', function() {
@@ -1222,6 +1300,15 @@
       queueSave('quick-ideas', qi.id, 'status', statusSel.value);
     });
     right.appendChild(statusSel);
+
+    var dlIdea = document.createElement('button');
+    dlIdea.className = 'mini-btn';
+    dlIdea.textContent = '↓ Doc';
+    dlIdea.title = 'Download this idea as a Markdown doc';
+    dlIdea.addEventListener('click', function() {
+      downloadDoc(slugify(qi.title) + '.md', quickIdeaToMarkdown(qi));
+    });
+    right.appendChild(dlIdea);
 
     var promoteBtn = document.createElement('button');
     promoteBtn.className = 'mini-btn';

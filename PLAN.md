@@ -5,6 +5,36 @@ Long-form retrospective archive. Newest first. The live "where are we now" point
 
 ---
 
+## 2026-06-05 — Docs catch-up, CLAUDE.md de-zombie, GitNexus indexing
+
+Follow-on to the port, same day.
+
+**Docs.** Populated the empty template stubs with real content: `README.md` (what
+Pitch Box is, stack, run, env, data model, API, deploy), `WORKING-STATE.md` (live
+pointer), `PLAN.md` (this archive).
+
+**CLAUDE.md.** Did a flag-driven pass with Brian: stripped ForgeOS zombies (Forge
+`brand_profile_id`, the `forgeintelligence.ai`/`ADMIN_PASSWORD` relay map, fake admin
+endpoints, PR #102 / 2026-05-07 lore) and corrected the facts (one Render service
+deploying from `main` only; `development` is integration-only; no linked env group —
+secrets in the service's own env; real hardened relay map → `docs/RENDERNEONSQLRELAY.md`;
+"cloud" not "Desktop"; dead doc links → `.claude/skills/gitnexus/`).
+
+**GitNexus indexing.** Ran `npx gitnexus@latest analyze`. Pitch Box is now indexed as
+`Pitch-Box` — 10 files, 176 symbols, 174 edges, 3 clusters, 0 flows (it's a 2-file app,
+so a flat graph is expected). Artifacts: `analyze` appended a fresh marker-wrapped
+GitNexus section to `CLAUDE.md` but left the old frozen Forge-Intelligence block above
+it — removed the stale duplicate so only the real generated section remains. Generated
+`AGENTS.md` (agent-context mirror) and the canonical nested skills under
+`.claude/skills/gitnexus/` (the old flat `GITNEXUS-*-SKILL.md` files were superseded and
+removed). The `.gitnexus/` graph DB is local-only — its own `.gitignore` (`*`) keeps the
+~24 MB KuzuDB index out of git; rebuild on demand with `analyze`. Per-session note: in
+the ephemeral cloud container the index doesn't persist, so a fresh session re-runs
+`analyze` to rebuild the local graph; the committed `CLAUDE.md`/`AGENTS.md`/skills are
+the portable carryover.
+
+---
+
 ## 2026-06-05 — Port from ForgeOS + stand up as standalone "Pitch Box"
 
 **Context.** The app began life inside ForgeOS (Brian's vibe-code platform) on branch
