@@ -37,11 +37,12 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Backend syntax check (server.js monolith)
         run: node --check server.js
-      - name: Typecheck (React app)
-        run: npm run typecheck
-      - name: Unit tests (route-inventory guard + future units)
-        run: npm test
 
+  # NOTE: Pitch Box is a plain-JS app (server.js + static index.html) — no React,
+  # no TypeScript, no test suite yet. The merge gate is the backend syntax check
+  # above. The job name "Typecheck & Test" is preserved because the branch ruleset
+  # matches the required check by name (see CI-AND-PR-CHECKS.md); re-add typecheck/
+  # test steps here when a real suite or a TS client lands.
+  #
   # TODO (Tier 2): add a `DB Integration` job — postgres:16 service container +
-  # migrations/*.sql + integration tests — to reach parity with SYSOI's stack.
-  # Blocked on Forge having a schema source (no migrations/ dir today).
+  # migrations/*.sql + integration tests — once there's a schema source / migrations dir.
