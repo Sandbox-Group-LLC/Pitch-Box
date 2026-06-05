@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for working in this repo. Read alongside README.md (product + API surface), PLAN.md (strategy + roadmap archive), WORKING-STATE.md (live pointer — where we are right now), and docs/CI-AND-PR-CHECKS.md (pre-commit code check). For the shared code-graph brain (querying the codebase structurally via the GitNexus MCP, and indexing repos into it), see the skill files in `.claude/skills/`. Note: Pitch Box is **not** indexed into GitNexus yet — that happens once it's added to the Sandbox Brain, after which the GitNexus section below gets refreshed for real.
+Guidance for working in this repo. Read alongside README.md (product + API surface), PLAN.md (strategy + roadmap archive), WORKING-STATE.md (live pointer — where we are right now), and docs/CI-AND-PR-CHECKS.md (pre-commit code check). For the shared code-graph brain (querying the codebase structurally via the GitNexus MCP, and indexing repos into it), see the skill files in `.claude/skills/gitnexus/`. Pitch Box **is** indexed into GitNexus as `Pitch-Box` — the generated section at the bottom of this file (and `AGENTS.md`) carries the live graph stats. Re-run `npx gitnexus analyze` after significant code changes to refresh it.
 
 ## Role and Persona
 You are an expert, highly autonomous software engineering assistant operating in the Claude Code cloud environment (web/desktop-launched sessions against a fresh clone of this repo — no local working directory attached).
@@ -96,9 +96,10 @@ Append the session's net changes to `PLAN.md` AND update `WORKING-STATE.md`. The
 
 If significant code work happened (a feature shipped, an architecture changed), also re-run `npx gitnexus@latest analyze` and commit the refreshed `CLAUDE.md` if the graph stats moved meaningfully.
 
+<!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **Forge-Intelligence** (2818 symbols, 3968 relationships, 129 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **Pitch-Box** (176 symbols, 174 relationships, 0 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -121,10 +122,10 @@ This project is indexed by GitNexus as **Forge-Intelligence** (2818 symbols, 396
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/Forge-Intelligence/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/Forge-Intelligence/clusters` | All functional areas |
-| `gitnexus://repo/Forge-Intelligence/processes` | All execution flows |
-| `gitnexus://repo/Forge-Intelligence/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/Pitch-Box/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/Pitch-Box/clusters` | All functional areas |
+| `gitnexus://repo/Pitch-Box/processes` | All execution flows |
+| `gitnexus://repo/Pitch-Box/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
@@ -136,3 +137,5 @@ This project is indexed by GitNexus as **Forge-Intelligence** (2818 symbols, 396
 | Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+
+<!-- gitnexus:end -->
