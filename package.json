@@ -1,0 +1,13 @@
+{
+  "name": "pitch-box",
+  "version": "1.0.0",
+  "description": "Pitch Box — internal demand & acquisition planning whiteboard for Sandbox-XM",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.4",
+    "express": "^4.19.2"
+  }
+}
