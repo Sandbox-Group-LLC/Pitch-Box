@@ -124,6 +124,10 @@ async function ensureSchema() {
   // Quick Ideas — lightweight pitch sketches hung off an account. Top-level tab in the UI.
   // Status values: 'sketch' (default), 'refining', 'promoted' (kept as history after promote-to-pitch).
   await sql('CREATE TABLE IF NOT EXISTS quick_ideas (id SERIAL PRIMARY KEY, account_id INTEGER, title TEXT, one_liner TEXT, summary TEXT, status TEXT DEFAULT \'sketch\', created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW())');
+  // Account research — intel ingested from the research agent via POST /api/research.
+  // A log (many timestamped entries per account, account_id -> accounts.id), not a
+  // single doc, so provenance and how-the-intel-evolved are preserved.
+  await sql('CREATE TABLE IF NOT EXISTS account_research (id SERIAL PRIMARY KEY, account_id INTEGER, title TEXT, summary TEXT, body TEXT, sources JSONB DEFAULT \'[]\'::jsonb, origin TEXT DEFAULT \'research-agent\', created_at TIMESTAMPTZ DEFAULT NOW())');
 
   var counts = await sql('SELECT (SELECT COUNT(*) FROM personas) AS p, (SELECT COUNT(*) FROM channels) AS c, (SELECT COUNT(*) FROM accounts) AS a, (SELECT COUNT(*) FROM playbooks) AS b, (SELECT COUNT(*) FROM pitches) AS pt');
   var row = counts[0];
@@ -926,9 +930,10 @@ app.get('/api/state', function(req, res) {
     sql('SELECT * FROM playbooks ORDER BY id'),
     sql('SELECT * FROM notes ORDER BY created_at DESC LIMIT 50'),
     sql('SELECT * FROM pitches ORDER BY created_at DESC'),
-    sql('SELECT * FROM quick_ideas ORDER BY created_at DESC')
+    sql('SELECT * FROM quick_ideas ORDER BY created_at DESC'),
+    sql('SELECT * FROM account_research ORDER BY created_at DESC')
   ]).then(function(r) {
-    res.json({ ok: true, personas: r[0], channels: r[1], accounts: r[2], playbooks: r[3], notes: r[4], pitches: r[5], quick_ideas: r[6] });
+    res.json({ ok: true, personas: r[0], channels: r[1], accounts: r[2], playbooks: r[3], notes: r[4], pitches: r[5], quick_ideas: r[6], account_research: r[7] });
   }).catch(function(e) {
     console.error('[state]', e.message);
     res.status(500).json({ ok: false, error: e.message });
@@ -1095,6 +1100,77 @@ app.post('/api/admin/relay', function(req, res) {
   }).catch(function(e) {
     res.status(500).json({ success: false, error: e.message });
   });
+});
+
+// ---- Account research ingestion ----
+// Token-gated (INGEST_TOKEN, env-only; disabled when unset, hardened like the relay).
+// The research agent POSTs { account | account_id, title, summary, body, sources[] }.
+// We match the account by company name (case-insensitive), create it as a prospect
+// if new, and append a research-log entry. Never call this from the browser.
+function validIngest(provided) {
+  var expected = process.env.INGEST_TOKEN;
+  if (!expected) return false;
+  if (typeof provided !== 'string' || provided.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
+}
+function bearerToken(req) {
+  var h = req.headers['authorization'] || '';
+  var m = /^Bearer\s+(.+)$/i.exec(h);
+  return m ? m[1].trim() : '';
+}
+
+app.post('/api/research', function(req, res) {
+  // Disabled-when-unset: an unconfigured deploy must not expose an open ingest.
+  if (!process.env.INGEST_TOKEN) {
+    return res.status(503).json({ ok: false, error: 'Ingestion disabled (INGEST_TOKEN not set)' });
+  }
+  var body = req.body || {};
+  // Token via Bearer header (preferred) or body.token.
+  if (!validIngest(bearerToken(req)) && !validIngest(body.token)) {
+    return res.status(403).json({ ok: false, error: 'Unauthorized' });
+  }
+  if (!sql) return res.status(503).json({ ok: false, error: 'Database not configured. Set DATABASE_URL.' });
+  var bodyText = typeof body.body === 'string' ? body.body.trim() : '';
+  if (!bodyText) return res.status(400).json({ ok: false, error: 'body (markdown string) required' });
+  var acctId = Number.isInteger(body.account_id) ? body.account_id : null;
+  var company = typeof body.account === 'string' ? body.account.trim() : '';
+  if (!acctId && !company) return res.status(400).json({ ok: false, error: 'account (company name) or account_id required' });
+
+  var sources = Array.isArray(body.sources) ? JSON.stringify(body.sources) : '[]';
+  var title = (typeof body.title === 'string' && body.title.trim()) ? body.title.trim() : (company ? company + ' research' : 'Account research');
+  var summary = typeof body.summary === 'string' ? body.summary.trim() : '';
+
+  function insertResearch(accountId, created) {
+    sql('INSERT INTO account_research (account_id, title, summary, body, sources) VALUES ($1,$2,$3,$4,$5::jsonb) RETURNING id',
+      [accountId, title, summary, bodyText, sources]
+    ).then(function(r) {
+      console.log('[INGEST] ' + new Date().toISOString() + ' account=' + accountId + ' research=' + r[0].id + ' bytes=' + bodyText.length);
+      res.json({ ok: true, account_id: accountId, research_id: r[0].id, account_created: created });
+    }).catch(function(e) { res.status(500).json({ ok: false, error: e.message }); });
+  }
+
+  if (acctId) {
+    insertResearch(acctId, false);
+  } else {
+    sql('SELECT id FROM accounts WHERE LOWER(company) = LOWER($1) ORDER BY id LIMIT 1', [company]).then(function(rows) {
+      if (rows.length) return insertResearch(rows[0].id, false);
+      sql('INSERT INTO accounts (company, category, stage, notes) VALUES ($1,$2,$3,$4) RETURNING id',
+        [company, (typeof body.category === 'string' ? body.category : ''), 'prospect', '']
+      ).then(function(a) { insertResearch(a[0].id, true); })
+       .catch(function(e) { res.status(500).json({ ok: false, error: e.message }); });
+    }).catch(function(e) { res.status(500).json({ ok: false, error: e.message }); });
+  }
+});
+
+// Delete a research entry (UI/cleanup). Consistent with the app's other unauth'd
+// mutate routes — the SPA owns it; the token gate is only for external ingest.
+app.delete('/api/research/:id', function(req, res) {
+  if (!requireDb(res)) return;
+  var id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ ok: false, error: 'Bad id' });
+  sql('DELETE FROM account_research WHERE id = $1', [id]).then(function() {
+    res.json({ ok: true });
+  }).catch(function(e) { res.status(500).json({ ok: false, error: e.message }); });
 });
 
 app.listen(PORT, '0.0.0.0', function() {
