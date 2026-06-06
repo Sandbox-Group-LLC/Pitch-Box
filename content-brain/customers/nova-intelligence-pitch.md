@@ -47,7 +47,7 @@ This is **not** a cold outbound to the CEO. The incoming CMO asked Brian to buil
 
 ---
 
-## ★ The Headline Pitch — **The 2027 Room**
+## ★ Headline Pitch A — **The 2027 Room**
 
 **Play:** Signature Activation Pitch
 
@@ -93,6 +93,64 @@ Every attendee gets a pre-event codebase scan — that **is** the invite mechani
 - **The credential moment is unrepeatable** — Microsoft, Salesforce, Deloitte, Accenture do not have the human.
 - **Anti-conference, pro-signal** — the opposite of SAPPHIRE NOW. Exactly the brand Nova should want.
 - **Category capture** — *"agentic AI for SAP"* gets named, defined, and authority-tagged in the room before Microsoft or a consulting giant tries to rename it.
+
+---
+
+## ★ Headline Pitch B — **The Clean Core Council**
+
+**Play:** Signature Activation Pitch *(DACH-led — the industrial counterpart to The 2027 Room)*
+
+### One-liner
+> A closed-door **council** — not a conference — for the CIOs, SAP Program Directors, and Enterprise Architects of the world's **industrial manufacturers**, convened in SAP's own backyard (**Germany**) and staged *beside the rooms they already travel to* (**DSAG**, **SAP TechEd**). One shared problem: SAP's **Clean Core mandate** and the **2030 cliff** make the custom code unavoidable, and the custom code is the one thing no SI can automate away. Two parallel tracks (strategic + architect), an annual peer-benchmark artifact (**The Clean Core Index**), and a credential moment only Nova can stage (the **HANA co-inventor** in conversation with a manufacturing CIO). The category-creation room **AND** the DACH pipeline funnel, fused in one architecture.
+
+### The frame — why this format, why now
+Not a conference. Not a booth. **A council** — but unlike a standalone summit conjured from nothing, it's staged **adjacent** to the events this audience already attends. Anchor it on the **DSAG Jahreskongress (Cologne, Oct 6–8, 2026)** — the densest room of German-speaking SAP customer decision-makers on earth (5,500+) — and extend it at **SAP TechEd (Berlin, Oct 27–29, 2026)**. We don't build the crowd. **We borrow its gravity and own the guest list:** ~40–60 invite-only industrial-manufacturing CIOs, VPs of IT, SAP Program Directors, COE leads, and Enterprise Architects.
+
+The clock is the rarest thing in enterprise software: a **board-level, externally-enforced deadline.** SAP's mainstream ECC maintenance ended in 2027, bridged only by premium extended maintenance to **2030** — and among large and midsize industrials, *about half have started the move and almost none have finished.* The blocker isn't infrastructure. **It's custom code** — the #1 technical barrier, cited by ~44% of migrators — which is precisely what SAP's Clean Core doctrine demands they shed, and precisely what Nova's agents automate. Every industrial CIO on the invite list is already under pressure to be in a room exactly like this. *We are not building demand — we are catching it.*
+
+And the competitive frame is clean: no SI, no hyperscaler, and no other AI vendor can convene **this** room **in Germany**, because none of them have Nova's credential stack. **The Clean Core Council is the only room where the people who BUILT HANA convene the industrial base that has to LIVE WITH it.**
+
+> **Nova convenes the room. Nova is not the speaker. Nova is the operating layer beneath the room.**
+
+### The two-track structure
+Two named personas — different humans, different jobs — run parallel for two days. Joint plenary opens; the **DSAG-night dinner** closes.
+
+- **🟦 The Andreas Track** — *SAP Program Directors / VPs of IT / CIOs.* The strategic frame: budget defense, vendor-selection methodology, board-reporting templates, and **anonymized DACH peer benchmarks** ("here's where the German industrial base actually is on the Clean Core curve — six months ahead of the public narrative"). **Andreas walks out with a 2030 migration narrative he can put in front of his board on Monday.**
+- **🟧 The Stefan Track** — *SAP Enterprise Architects / COE leads.* Architect-grade sessions: **live custom-code teardowns on attendees' own ABAP repositories** — Nova's AI runs the POC live, in the room, on real code. Clean Core governance workshops, CDS view migration patterns, module-interdependency mapping. **Stefan walks out having watched Nova handle his actual codebase, not a demo dataset.**
+
+> The design point: Andreas shows up for the strategic frame, Stefan shows up for the technical proof, and they go home aligned for the first time — because they were aligned in the same building. It mirrors the exact deal shape Nova closes: technical champion **plus** executive sponsor.
+
+### The artifact — The Clean Core Index
+The single most defensible piece of IP Nova can own. An annual, anonymized aggregate dataset built from every attendee's **pre-event codebase scan** (Nova runs the scans; attendees opt in to inclusion). It becomes the authoritative answer to the question every industrial SAP shop is asking and no one has answered: *how much custom code actually stands between the Global 2000 industrials and Clean Core — and who's really ahead?* Published as a paid report; excerpts to **Handelsblatt**, **The Wall Street Journal**, and **CIO Magazine**; methodology lives at Nova.
+
+> **In year one, the Index is the room. In year two, the room joins because of the Index.**
+
+### The credential moment
+Not a product demo. A fireside between Nova's **SAP HANA co-inventor, Prof. Dr. Alexander Zeier**, and a customer CIO mid-migration, on stage, on the record — themed:
+
+> **"What HANA was built for — and what Clean Core really asks of you."**
+
+This is the moment press writes about — clipped and circulated for 12 months. Staged on German soil, in front of the German industrial base, it makes Nova's credential stack *physical*, with none of the vendor spin. *Microsoft, Salesforce, Deloitte, and Accenture structurally cannot replicate it — they don't have the human.*
+
+### The pipeline tail
+> **The room is the strategy. Pipeline is the receipt.**
+
+Every attendee gets a **pre-event codebase scan — that is the invite mechanism.** Every Andreas walks out with a board-ready migration narrative; every Stefan walks out having seen Nova handle his code. Structured follow-up is owned by the Nova GTM team and mapped to deal stages, with full **before-and-after-the-room measurement** — committee mapping per account, in-room intent capture, attributed pipeline. Each council is capable of seeding **12–18 months of named DACH enterprise pipeline.**
+
+**Partner lever:** co-host the DSAG dinner with **Kyndryl** — it borrows their account relationships into the room and turns their proof point (75% less manual effort, 50% cost reduction) into a live customer testimonial.
+
+### Rollout — the season, not the one-off
+- **Wave 1 — Q4 2026, Germany:** DSAG Cologne (the council) → TechEd Berlin (the architect proof) → optional **SPS Nuremberg (Nov 24–26)** CIO suite to extend into the automation vertical (Festo-adjacent).
+- **Wave 2 — 2027, scale:** LogiMAT Stuttgart (Mar) for intralogistics, **Hannover Messe (Apr)** as the cross-vertical marquee, **SAP Sapphire (May, Barcelona)** for executive density. The Council becomes a recurring, ownable franchise.
+
+### Why it wins for Nova
+- **A hard external deadline (the 2030 Clean Core cliff) pulls the buyer to the room** — the lowest-CAC enterprise marketing motion possible.
+- **Adjacent-to-third-party staging borrows the crowd and keeps the guest list** — no need to manufacture an audience from scratch; DSAG and TechEd already gathered them.
+- **Two-track format serves both buying personas simultaneously** — the deal-shape Nova closes is mirrored in the room itself.
+- **The Index is a structural moat** — DACH-first; by year two no competitor can publish a credible alternative.
+- **The credential moment is unrepeatable** — and it lands hardest on home turf, in front of the people who run SAP's heartland.
+- **Anti-conference, pro-signal** — the opposite of SAPPHIRE NOW. Exactly the brand Nova should want.
+- **Category capture** — *"agentic AI for SAP — the road to Clean Core"* gets named, defined, and authority-tagged in the room, in Germany, before a hyperscaler or consulting giant tries to rename it.
 
 ---
 
