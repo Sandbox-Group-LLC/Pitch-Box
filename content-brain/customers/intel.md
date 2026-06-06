@@ -14,7 +14,7 @@
 ## The Relationship — How Sandbox-XM Serves Intel
 
 ### Engagement model
-Sandbox-XM (operating as MAS / Sandbox Group) is Intel's **lead experience agency** for the Events & Experiences (E&E) organization. The primary Intel stakeholder is the E&E team led by Deidre Rippy. Sandbox-XM handles:
+Sandbox-XM (operating as Sandbox Group LLC) is Intel's **lead experience agency** for the Events & Experiences (E&E) organization. The primary Intel stakeholder is the E&E team led by Deidre Rippy. Sandbox-XM handles:
 
 - **Experience strategy & creative** — overall event strategy, creative direction, visual identity, attendee journey, environmental design, floor plans, and renders.
 - **Production & operations** — event production management, workback schedules, partner production schedules, budgets, venue sourcing/contracting, room blocks, F&B, housing, registration.
