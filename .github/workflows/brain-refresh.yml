@@ -52,7 +52,7 @@ jobs:
             local resp http body jid start el gw=0 s sh sb st ph
             resp=$(curl -sS -m 60 -w $'\n%{http_code}' "${AUTH[@]}" \
                    -X POST "$BRAIN/api/analyze" -H 'Content-Type: application/json' \
-                   -d "{\"url\":\"$REPO_URL\"}" 2>&1) || { RC=3; ERR="POST unreachable"; return; }
+                   -d "{\"url\":\"$REPO_URL\",\"embeddings\":true}" 2>&1) || { RC=3; ERR="POST unreachable"; return; }
             http=$(printf '%s' "$resp" | tail -n1); body=$(printf '%s' "$resp" | sed '$d')
             echo "POST $BRAIN/api/analyze ($REPO_URL) -> HTTP $http"
             case "$http" in 5*|000|"") RC=3; ERR="POST HTTP $http"; return;; esac
