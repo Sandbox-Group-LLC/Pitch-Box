@@ -1,1 +1,505 @@
-Stub
+# Pitch Box Strategy & Pursuit Operations Alignment — Phil, Kristen, Brian
+
+- Date: Wed Aug 19
+- Status: recorded
+- Platform: teams
+- Source: recall
+- Agent: pitchbox
+- Route: keywords
+- URL: https://teams.microsoft.com/meet/29397481427515?p=wWbccxE0uGuzaUU0f7
+- Recall bot: `617a373a-4ac8-4ad6-b1b3-59ef1aa6e9e3`
+- Meet Gibson id: `76b44e43-c6b2-4c9d-8e0d-ef5815d6abd6`
+
+## Executive brief
+
+- Phil outlined a three-part AI-driven RFP/RFI process vision: (1) go/no-go qualification & committee voting, (2) automated RFI response generation, and (3) tiered RFP response production — with Pitchbox as the preferred front-end platform.
+- Brian's Pitchbox platform already handles multi-weighted go/no-go scoring, brand-vs-prospect matching, opportunity brief generation, and HubSpot API integration — making it a strong fit for the envisioned workflow.
+- The primary internal blocker is Satya (CIO), who is expected to resist third-party data tools on security/sovereignty grounds and may push for internal development instead. His team's developer capability is described as limited ('Domino-level').
+- Pitchbox does not yet have SOC 2 certification (scheduled for January 1st assessment), which likely puts it in violation of existing client MSAs — a concrete compliance risk affecting ~30% of competitive bids with existing customers.
+- The team converged on a two-track integration path: Pitchbox → HubSpot (via API/Nango OAuth) → Microsoft Teams (Power Automate) for committee voting, with Kristen owning the HubSpot-to-Teams relay build.
+- Phil proposed separating Brian's engagement into two distinct contracts: (1) Director of Pursuit Operations (fractional contractor, ~10 hrs/week, running daily resource calls and coaching Denise/Megan), and (2) a Pitchbox Founder SOW with a licensing/management/compute fee structure thereafter.
+- Brian confirmed openness to the fractional Director of Pursuit Operations role, noting it is feasible if the process is truly automated. He is also starting a part-time strategic event consultant contract with Intel on January 1st.
+- Key deliverables identified before Satya meeting: a process map (Miro), a Director of Pursuit Operations contract, and a Pitchbox Founder SOW — in that priority order.
+- Phil's strategy for Satya: present Brian's contractor role first (no Pitchbox dependency), then introduce Pitchbox as a separately scoped, secure, single-tenant tool — framing it as 'front of house' with no factory/back-office data exposure.
+- A Friday touchbase with Brian and the broader team is contingent on whether the company is down-selected for a HubSpot opportunity (decision expected the following day).
+
+## Ranked moves
+
+### Execute Director of Pursuit Operations Contractor Agreement with Brian (independent of Pitchbox)
+- Impact: High · Effort: Low
+- Why: Locking in Brian's fractional role immediately gives Phil leverage with Satya ('we already have a pursuit lead') and solves the daily resource call and RFP process ownership gap regardless of tool approval. Suze and the creative team are already treating Brian as this role.
+- Evidence: Phil: 'Let's get you signed up for the first thing to leverage the second thing.' Brian: 'They don't have to be mutually exclusive at all whatsoever.'
+
+### Build and Deliver Miro Process Map of End-to-End RFP/RFI Workflow
+- Impact: High · Effort: Med
+- Why: Satya will require a clear, visual, security-annotated process map to approve Pitchbox. It also aligns internal stakeholders (Nick, Jim, Eric Schoneman) on the full vision before the CIO meeting.
+- Evidence: Phil: 'I want a process map based on what Gibson recorded... so he understands form is submitted, blah blah blah.' Phil: 'I want to present it to Satya one-on-one.'
+
+### Draft Pitchbox Founder SOW with Licensing/Management Fee Structure
+- Impact: High · Effort: Med
+- Why: A formal SOW separates the platform cost from Brian's labor, makes the arrangement legible to Satya and finance, and protects both parties. The 'founder package' framing (dedicated instance, 6-month onboarding) may also ease Satya's concern about data ownership.
+- Evidence: Phil: 'Separate contract is for the use of founder model and management oversight of Pitchbox. Thereafter a licensing fee, a management fee, and an AI/token/compute fee.'
+
+### Resolve Pitchbox → HubSpot → Teams Voting Integration
+- Impact: High · Effort: Med
+- Why: The go/no-go committee voting workflow is the linchpin of the entire approval process. Kristen has the Teams voting form built; Brian has the HubSpot API mapped. The missing piece is the HubSpot ↔ Power Automate relay — a defined, solvable technical gap.
+- Evidence: Kristen: 'What we could do is send this to HubSpot as a note, then I could take that note, send that through Power Automate as a vote of go/no-go.' Brian: 'I can figure it out.'
+
+### Prepare Security & Data Architecture Brief for Satya Meeting
+- Impact: High · Effort: Med
+- Why: Satya's objections are predictable: SOC 2 gap, third-party data exposure, MSA compliance. Brian's single-tenant architecture (separate database per client, row-level isolation) and Nango SOC 2 OAuth brokering are strong counters — but must be documented proactively.
+- Evidence: Brian: 'Every company has their own database... it's impossible for your data to touch each other.' Phil: 'It's Sock 2... that's gonna be the hurdle with him.'
+
+### Evaluate RFPIO/Responsive Replacement Decision via Pitchbox RFI Capability
+- Impact: Med · Effort: Low
+- Why: Phil believes Pitchbox can replace RFPIO/Responsive for RFI responses if the knowledge base is trained up. Confirming this eliminates a redundant tool cost and simplifies the stack before Satya's review.
+- Evidence: Phil: 'I don't think we will [need RFPIO or Responsive]. If we go to this Pitchbox solution and it has everything for us, then it's just upload the RFI, shoots it out.'
+
+### Align Nick and Jim on Consolidated Pitchbox + Brian Pursuit Ops Narrative
+- Impact: Med · Effort: Low
+- Why: Nick and Jim have already chef-kissed the high-level orchestration. They need a tight, unified message to carry into Satya's meeting and to support the contract approvals. Eric Schoneman (COO) also wants a briefing and will provide back-end rates.
+- Evidence: Phil: 'I want us to align so that we have a tight message on what goes to Nick so he could support it for Satya.' Phil: 'I met with Eric Schoneman, our COO. He wants to meet next week.'
+
+## Risks / gaps
+
+- **Pitchbox SOC 2 gap likely violates existing client MSAs** — ~30% of competitive bids are with existing customers who have MSAs requiring SOC 2-certified vendors. Using Pitchbox before certification could expose the company to contract breach. → Legal/compliance review of MSA language; determine if a data processing addendum or limited-scope carve-out is feasible in the interim. Brian's SOC 2 assessment is scheduled January 1st — confirm timeline and whether a bridge arrangement is possible.
+- **Satya (CIO) is a high-probability blocker with unpredictable scope of objection** — Satya is expected to resist on data security grounds AND may push for internal development. His team's actual dev capability is described as very limited, but his authority to block is real. → Phil to meet Satya next week. Prepare: (1) security brief on Pitchbox single-tenant architecture, (2) Brian's contractor role framed as independent of Pitchbox, (3) front-of-house vs. back-of-house data boundary argument.
+- **No signed contract or formal business arrangement with Brian yet — relationship operating on good faith** — Brian is actively being referenced internally as 'Director of Pursuit Operations' and has been training the team, but there is no executed agreement. This creates ambiguity on scope, IP, exclusivity, and billing. → Prioritize drafting and executing the Director of Pursuit Operations contractor agreement before the Satya meeting. Phil to present to Nick for approval.
+- **HubSpot ↔ Power Automate integration is unresolved and technically non-trivial** — Microsoft's OAuth implementation is described as problematic by both Kristen and Brian. The relay between Pitchbox, HubSpot, and Teams voting has no assigned owner, timeline, or tested path. → Kristen to share the exact data fields required from HubSpot to Power Automate with Brian. Brian to scope the relay using his Microsoft developer account and Nango OAuth broker.
+- **Brian's availability is constrained by Intel contract starting January 1st and HubSpot Unbound commitment** — Brian is taking on multiple fractional engagements simultaneously. If the Pursuit Ops role is not scoped and contracted clearly, it risks being deprioritized or under-resourced. → Define explicit hours/week, deliverables, and billing cadence in the contractor agreement. Confirm that Intel and Pitchbox Forge commitments are disclosed to all parties.
+- **Tier 3 RFP automation is aspirational — no defined workflow or owner yet** — Phil articulated the Tier 3 use case compellingly (low-touch, high-volume, high-upside accounts like Arctic Wolf), but no concrete workflow, tooling decision, or responsible party was assigned. → Include Tier 3 RFP automation as a defined workstream in the Miro process map. Assign Brian to scope what Pitchbox can render autonomously vs. what requires human review.
+- **Back-end rate data from Eric Schoneman (COO) is a dependency for the calculator/estimation workflow** — The opportunity assessment calculator requires internal cost rates (price per square foot, producer, creative director rates, etc.) that only Eric can provide. Without this, the automated estimation output will be incomplete. → Phil to follow up with Eric Schoneman after their next week meeting to collect and input rate data. Determine where rates are stored and who maintains them.
+
+## Tasks
+
+- [ ] **Draft Director of Pursuit Operations Contractor Agreement for Brian** (`P0` / CLIENT / Phil Schlitz)
+  - Scope: ~10 hrs/week fractional contract. Responsibilities include running daily 15-min resource assignment calls, coaching Denise and Megan on pursuit workflow, and overseeing RFP/RFI process. Contract must be independent of Pitchbox to give Phil leverage with Satya. Present to Nick for approval before Satya meeting.
+- [ ] **Build Miro Process Map of End-to-End RFP/RFI Pursuit Workflow** (`P0` / STRATEGY / Brian Morgan)
+  - Visual process map covering: opportunity intake → go/no-go scoring (Pitchbox) → committee vote (HubSpot → Teams via Power Automate) → resource assignment (HubSpot) → RFI/RFP response generation → output delivery. Based on Gibson's recording. Required for Satya one-on-one presentation.
+- [ ] **Draft Pitchbox Founder SOW with Licensing/Management/Compute Fee Structure** (`P0` / CLIENT / Brian Morgan)
+  - Formal scope of work for Pitchbox engagement: dedicated single-tenant instance, 6-month onboarding and tuning period, followed by recurring licensing + management + AI compute fee. Frame as 'Founder Package.' To be presented to Satya after Pursuit Ops contract is signed.
+- [ ] **Kristen to Share HubSpot → Power Automate Data Field Requirements with Brian** (`P0` / TECH / Kristen Haynes)
+  - Kristen to document the exact data fields (opportunity details, voter list, dossier content) that must flow from HubSpot into Power Automate to trigger the Teams committee voting workflow. This unblocks Brian's relay build.
+- [ ] **Scope and Build Pitchbox → HubSpot → Teams Voting Relay** (`P1` / TECH / Brian Morgan)
+  - Brian to build the API relay connecting Pitchbox output to HubSpot (as a card/note on the opportunity record), then trigger Power Automate to send a Teams voting message (thumbs up / thumbs down / question mark) to the go/no-go committee. Use Nango OAuth broker for authentication. Requires Kristen's field spec first.
+- [ ] **Prepare Security & Data Architecture Brief for Satya Meeting** (`P1` / STRATEGY / Phil Schlitz)
+  - Document Pitchbox's single-tenant architecture (separate database per client, no shared data), Nango SOC 2 OAuth brokering, sub-processor SOC 2 coverage, and front-of-house vs. back-of-house data boundary. Address SOC 2 gap and MSA compliance risk proactively. Phil to present to Satya.
+- [ ] **Present Director of Pursuit Operations Contract to Nick for Approval** (`P1` / CLIENT / Phil Schlitz)
+  - Phil to brief Nick (and Jim) on the Brian contractor engagement — scope, rationale, and how it supports the broader pursuit ops vision — before presenting to Satya. Frame as: sales, go-to-market, and creative coming together to build a modern AI-driven pursuit process.
+- [ ] **Meet with Eric Schoneman (COO) and Collect Back-End Rate Data** (`P1` / OPS / Phil Schlitz)
+  - Phil to meet Eric next week. Collect internal cost rates (price per square foot, producer, creative director, designer, account services, etc.) required to power the opportunity assessment calculator and estimation workflow in Pitchbox/HubSpot.
+- [ ] **Meet with Satya (CIO) — Pitchbox & Pursuit Ops Approval** (`P1` / STRATEGY / Phil Schlitz)
+  - Phil to present the full pursuit ops vision to Satya: (1) Brian's contractor role as Director of Pursuit Operations (independent of Pitchbox), (2) Miro process map, (3) Pitchbox Founder SOW with security brief. Frame Pitchbox as front-of-house only, no back-office data exposure.
+- [ ] **Confirm Friday HubSpot Unbound Touchbase — Contingent on Down-Select** (`P1` / CLIENT / Phil Schlitz)
+  - Phil to confirm or cancel Friday meeting with Brian and team based on whether the company is down-selected for the HubSpot opportunity. Decision expected the following day (Thursday).
+- [ ] **Define Tier 1 / Tier 2 / Tier 3 RFP Automation Matrix** (`P2` / STRATEGY / TBD)
+  - Document which RFP tiers receive full bespoke treatment (Tier 1), hybrid human+AI (Tier 2), and near-full Pitchbox automation (Tier 3). Include handoff rules, resource requirements, and Pitchbox capability boundaries per tier. Input needed from Chuck, Suze, Dieso, and Brian.
+- [ ] **Evaluate and Decide on RFPIO / Responsive Replacement** (`P2` / TECH / Phil Schlitz)
+  - Assess whether Pitchbox's RFI response capability (trained on internal knowledge base) makes RFPIO or Responsive redundant. If yes, plan deprecation timeline and cost savings. Decision should be made before any new tool contracts are signed.
+- [ ] **Introduce Brian Morgan to Adrian (Game On Marketing) Referral Network** (`P2` / CLIENT / Phil Schlitz)
+  - Phil to make a warm introduction between Brian and Adrian to explore referral/partner revenue opportunities for Pitchbox and Brian's fractional consulting practice, aligned with the Game On Marketing model.
+- [ ] **Explore Tony Palmieri Fractional Account Director Engagement** (`P2` / CLIENT / Phil Schlitz)
+  - Follow up with Tony Palmieri on a fractional account director arrangement (~20 hrs/week, travel-ready). Identify 1-2 appropriate client accounts for her to support. Coordinate with Halsey on account services fit.
+
+## Follow-up draft
+
+**Subject:** Pursuit Ops & Pitchbox — Next Steps: Contract, Process Map, Satya Prep
+
+Brian,
+
+Great session today — a lot of clarity came out of it. Here's where I see us landing and what I'd like to move on quickly:
+
+**Three deliverables before the Satya meeting:**
+
+1. **Director of Pursuit Operations — Contractor Agreement**
+   Scope: ~10 hrs/week, running daily 15-min resource calls, coaching Denise and Megan on pursuit workflow, RFP/RFI process oversight. This contract stands independently of Pitchbox — I want to present it to Nick first and get you signed up so we have leverage going into the CIO conversation.
+
+2. **Miro Process Map**
+   End-to-end flow: Opportunity intake → go/no-go scoring → committee vote (HubSpot → Teams) → resource assignment → RFI/RFP response → output. Based on what Gibson recorded. This is what I'll walk Satya through one-on-one.
+
+3. **Pitchbox Founder SOW**
+   Dedicated instance, 6-month onboarding/tuning, followed by a recurring licensing + management + compute fee. We'll present this to Satya after the contract above is in place.
+
+**On the integration side**, Kristen will share the exact data fields that need to flow from HubSpot into Power Automate for the voting workflow. Once she does, can you scope the relay using your Microsoft developer account and Nango? That's the last technical gap in the go/no-go loop.
+
+**Friday's call** is still contingent on the HubSpot down-select (we hear back tomorrow). I'll confirm whether we're on.
+
+Let me know if you want to jump on a quick call early next week to align on the SOW and process map before I go to Nick.
+
+Thanks, Phil
+
+
+## Transcript
+
+```
+Schlitz, Phil: So it's those. Those few documents and goes to the committee, which Kristen can show you. But I know you've seen this before at MC Squared. Thumb up aggregates the vote. Or thumb down question you could submit a question in. So there's a human in the loop element for the vote. If the vote reaches parody or quorum or consensus, it will then this is not in place. But advance the opportunity from the approval phase to open project phase and HubSpot. I don't know what happens after that, Kristen. And then also because the opportunity brief required you to tell us what resources you need, ideally could generate the HubSpot ticket saying this opportunity has been approved are the resources that are requested. And then it sits in the queue depending on the resources that were requested. Just like at MC Squared, if a strategist was requested, that ticket workflow sends an email to Michael Dieso, creative director, goes to Suze, designer goes to Chuck, Account services go. Probably just goes to all of them because whatever. Anyway, so the ticket exists. And then every day at 1:30, Brian leads a call. See, I'm manifesting that. Brian leads a call on resource assignments and goes, okay, ticket for the. What did we just get? I don't know. Monster Brewing rfp. It's got to go. Here's the timeline. Here's everything we need. It's requesting a 3D designer. Chuck is like, yeah, I looked at it this morning. I have Kyle. You're like, great. You type Kyle's name into the designer. HubSpot sends everything over to Kyle now. All right, I need an estimator. John goes, yeah, give that to Kelly. Kelly. You put her name in workflow, shoots it all over to Kelly. So everyone who's been attached to the RFP and the appropriate resources now has the RFP documents, the opportunity assessment, the calculator, the milestone timeline, and I'm sure some type of beautiful agentic. Here's an approach to winning this project, right? And all that can happen. We could do that today, but Kristen's working on one part. I'm working on one part, you're working on another part. So that's what this call is. Just to get us together and figure this out. I shared it with Nick and Jim last night. Like the orchestration, like high level. They chef kissed it. They're like, yes, I met with Eric Schoneman, who's our coo. He wants to meet next week and learn a bit more. But he's like totally enthusiastic. So he'll be providing the back end rates for like the price per square foot. The retail rates for. Producer, creative director, all that. And then I'm meeting with Satya, who's going to be the holdup on this next week. And he's going to be the holdup because of data and that you're a third party partner. And if this is going through Pitchbox like that's where the rubber is going to meet the road. That's my spiel.
+Haynes, Kristin: He's also going to be. He wants his team to create all of this instead of us create things.
+Schlitz, Phil: It's already created. We just literally need to like tell Claude to connect it all. It's great. But you have a point.
+Morgan, Brian: So he runs a team of developers or.
+Schlitz, Phil: Oh, oh, look at that question. Well, he's the CIO from a few weeks ago. He joined. We have an ERP team, we have an IT team which is largely security. We do have a couple developers, right?
+Haynes, Kristin: Yeah.
+Schlitz, Phil: Yeah,
+Haynes, Kristin: You know how to develop on Domino.
+Schlitz, Phil: I prefer little caesars.
+Haynes, Kristin: That gives you the level of developer that we have.
+Schlitz, Phil: So I think Kristen, that Chuck, soon to be Diesel and definitely Suze and definitely John Eric are making the assumption that pitchbox is the way forward. And they've been working with Brian the last few weeks on training it and talking through workflows and co developing some stuff. Obviously we have to come up with a business arrangement, but Brian's moving in good faith, so are we. And it's in his interest right now because he's, he's anonymizing the data through Presidio. So this is, this is a benefit for him, but for us, Satya or not, like the creative team they're running and that is so that, so all that was just about the RFP go, no go process, resource optimization process. The other half of this is the actual response. So we, I'll say Chuck Seuss, myself and Dieso want the RFIs that we have to respond to, which is like 20% of our responses, maybe 30% are start as RFIs, if not more for Pitchbox to shoot that out and then Megan or Denise in sales operations, human in the loop, sit. Right. And the AE always has to double check, send that out, like stop burdening the organization. We know the answers to our questions. We know about sustainability. We know. So this also pertains to whether or not we need RFPIO or responsive, which I don't think we will. If we go to this pitchbox solution and it has everything for us, then it's just like upload the rfi, shoots it out, whatever. It still might require Megan logging into Copia or Reba or whatever. And. Typing in the. But there's nothing AI could do for that right now. And then the part three of this. Part one is RFP process, part two is RFIs. Part three would be if we're leveling like tiering our RFP responses in terms of customization and resources. Tier 3 might always be bespoke. Tier 1 might always be bespoke like very ingredient, like written by humans, designed by humans. But for the tier three, like the bottom percent which. Which we still want to pursue because those tier three, those 20 by 30s at black hat one offs, they become your next $6 million account. Seven $8 million account. But they are like compressed price, price versus preference tough. They have lots of asks and like Arctic Wolf, we won that right? It was 200 grand today in under one year it's 800 grand. If they go bonkers, the loy Snowflake has and others, then they go from an 800 grand account to 8 million to 18 million. So we can't sleep on the tier threes. But the tier threes eat up as much time and effort as the tier tier ones and the twos are somewhere in between. So it requires strategy require maybe it doesn't require strategy. Requires a little creative thought, requires design, requires estimation, account management. And Pitchbox can largely do it. It could even render. Not that we're necessarily like it's just we will render for now but we could run them in parallel. So that's where. Right Brian? Did I get that right? Brian?
+Morgan, Brian: Yeah. Tier 3 can knock him out and, like very little human hours. Yeah.
+Schlitz, Phil: But this, this is contingent on Brian accepting an offer contract, maybe a lease to own but definitely like helping come on and run probably as a contractor first because that's what he's going to want as like a art lead of pursuit operations and having Denise under him. I know Megan, we have different plans for but the pursuit, responding to proposals, having Brian be the head in charge as he would put it as like here's, here's how we're responding to running the resource call. Not the one that I do. I think, I think mine. I can probably move that to like a tri weekly. Like hey, let me give you a pipeline update to the org. But like that Monday call,
+Haynes, Kristin: You said.
+Schlitz, Phil: that Monday call, it needs to be every day. It already is only 15 minutes. Except when we're just like shooting the shit. So in 15 minutes we'll be able to go through everything. Pull up. Okay, Monster brewing, let's go. Next one is Tesla. We just got that for their. Program, and you'll sign those resources really fast because it's already been emailed out to everybody. And people will get into that habit. They'll wake up in the morning and see everything. And if you're a department head, before your day gets busy, you should see first thing, like, what resources came in that made it through the go no go process that I have to assign. So we don't lose any time, because losing one day is deadly. And we lose probably three and a half days on average. On average, there's times we start a project kickoff RFP that we had 15 business days for, and we'll kick it off and there'll be eight business days left. That happens a lot, and you don't have enough time to design it, estimate it. Iterate that again to hit the budget while in parallel, working on a Canva deck.
+Morgan, Brian: I mean, even if you had to from a like an ERP ops perspective, had to keep like the qualification pipeline locally. I mean our, I mean I. We know every freaking HubSpot API endpoint and have mapped them and pinged them and received and sent. We have my other platform, which is more of like an event acquisition. Its sole purpose is to normalize mappings between external platforms. So we can make HubSpot talk to a registration platform, talk to a marketing automation platform and normalize it. So we already know everything there is to know about the HubSpot API. And we could create a custom API connection. All you would have to do is drop an app in developer on Whoever owns the HubSpot account. It takes 10 minutes, drop the client ID and secret in. And then what it would do is it would just take the data and whatever data points that Pitchbox needs to get to the next step. It would just do it automatically. It would just land there. Because what you're describing is a lot of what it does right now. It takes a lot of different data points and does a qualification across many different points. It says like based on budget and how much you want to invest and it takes all the no go points. It also has understanding of what pursuit costs look like. So we'll tell you based on, you know, this RFP at $4 million, if you want to, you know, go this hard on it, you need to budget for this many hours at this cost in these type of roles. So it does it automatically. And there's a lot. Let me show you. There's. What's. What we did too is we made it pretty. Pretty. Pretty multi tenancy. So you can actually come here and there's so many levers you can weight everything on. Like we have a house model. But you can go in and you can literally change how your points are distributed across every single.
+Schlitz, Phil: We. We were literally just talking about that. Yeah, that for that. That first one. Yeah.
+Morgan, Brian: It's very straightforward. We ran it on. I didn't run it on that one. I didn't run on any of yours. But you can come in here and you can click and then it uses the house algorithm or you can go. And you can extremely fine tune it on so many different viewpoints to how you actually weight it. I don't think I ran. Let me look. Did I qualify anything? I don't think. Let me do this now we're doing this in the box. Let me go over to. So you would get like. What did I do? Get it up here. No, First. I did not do it anywhere. I mean it's. We'll just see what happens. We'll just press a bunch of buttons, see what happens. Yes. No, pick one. I don't know. What are we picking?
+Schlitz, Phil: Well, while you do that, like, I would think most everything that I mentioned in the go no go process would live on, quote, unquote, our side. But if you're suggesting off ramp from the flow that I mentioned to come into Pitchbox, as opposed to Claude for generating all that stuff that you are, you are suggesting that. Okay,
+Morgan, Brian: Yeah.
+Schlitz, Phil: so instead, so once the opportunity brief is.
+Morgan, Brian: Is because. What. What's this? What ours sits on is our cortex. That's. I was actually really fast. Our cortex is. It's like a mini LM. I told you about this field. Like it's about 2 gigabytes right now. It's pretty big and it's mappings of a lot of information. So what this is also doing now is the backside of pitchbox is. It has already done an analysis on the brand. It looks at opportunities for them and then for your brand. So it's taking your brand and their brand and matching them. And effectively telling you, like, based on what they do and what they need and what you do and what you want, this is how you're going to win this business. And this uses that data in the background, too. So it's a little more precise into the actual brand as well. It doesn't just take into consideration what you want out of them. It looks at, like, buying patterns from, like, CBN sites. So there's also data behind it that says, hey, you may think that this is a lot richer than it is, but based on what we found of RFPs that they have put out, they don't award on X, Y, and Z. So there's more data in the background on how they actually buy.
+Schlitz, Phil: I have no idea what you just said in terms of those acronyms, but I'll maybe Kristen, if you know, I just like now that we, we, we need to definitely align. I want us to align so that we have a tight message on what goes to Nick so he could support it
+Morgan, Brian: Yeah.
+Schlitz, Phil: for Satya. Like, hey, sales go to market strategy. Creative design came together to create a modern AI driven, informative, agentic process. And here it's very simple and here's the security behind it and the data and it's whatever because this isn't hard. So Kristen, like knowing what you know, seeing what you've seen, yes, you can do it. We can build it in Claude. But now this is something to consider.
+Haynes, Kristin: Mmhmm.
+Schlitz, Phil: Do we, do we, do we work out something with, with Brian for pitchbox? If Pitchbox didn't exist, what I explained, we can already implement like from a, from a singularity of a cloud perspective and it'd already be infinitely better. This whole thing is what the creative team is interested in from a RFI response. So
+Haynes, Kristin: Mm.
+Schlitz, Phil: that's, I think that's the point is like we wouldn't just use it for RFI response, you would want to have it be that front end. So it's getting learned to up trained up on all the stuff. So when it does come to push to rfi, it's already basically like idling and ready to go.
+Morgan, Brian: Yeah. What is. I think what they were really interested in is. I built this thing to where it literally won't let you go to the next step until somebody approves it. Let me find something that actually will let us do it.
+Schlitz, Phil: Crystal. You got to jump. I know, I know. You got to drop your son off.
+Haynes, Kristin: I still have eight minutes.
+Schlitz, Phil: Okay?
+Morgan, Brian: I did this for. I don't know how to say it, this brand.
+Schlitz, Phil: Yeah. Yep. We just declined that.
+Morgan, Brian: Oh, you did? I know. Somebody just didn't work there. How funny. But what it will do is in here, it loads a brief and the brief takes a ton of information and it can. To Miro, it can throw it in deck and it's basically everything about the rfp. It's enrichment. Things we found online. It does. It studies, like, the history, like, it. It compares keywords, like, It'll take Adyen, NRF, Booth 20, 25, 26. It'll research what they've done in the back or in the history at nrf, grab pictures. So basically what it does is it takes all the data up to that point and compiles it into a package that you could literally hand it off to the team and say, this is what we're bidding on. This is who they are, this is where they've done in the past and this is what it's going to take to win it. In a sense, it just hands a strategy in a little bow, Which I think that's what the creative team really likes, is that it's just like everything they need to just jump in and get started is right there in front of them.
+Schlitz, Phil: Any questions for Brian. I
+Haynes, Kristin: So
+Schlitz, Phil: just
+Haynes, Kristin: if.
+Schlitz, Phil: wanted him to kind of update you on where he is.
+Haynes, Kristin: So if we get like, let's say we use this for the go no go, we would still want the team to be able to vote. Right. So how would we get this data out and into a Power Automate workflow for voting?
+Schlitz, Phil: Into teams, ideally.
+Morgan, Brian: I can look at the API and see how I can get it over there.
+Haynes, Kristin: It's frigging Microsoft, so it sucks, but.
+Morgan, Brian: Terrible, the worst.
+Schlitz, Phil: I
+Morgan, Brian: But
+Schlitz, Phil: mean,
+Morgan, Brian: I
+Schlitz, Phil: it
+Morgan, Brian: have
+Schlitz, Phil: does.
+Morgan, Brian: a.
+Schlitz, Phil: It doesn't have to be Microsoft if they're. We just need a. We need a way to vote.
+Morgan, Brian: But
+Schlitz, Phil: That's
+Morgan, Brian: I have a
+Schlitz, Phil: not.
+Morgan, Brian: have a Microsoft partner, an MPN or whatever they have it. So I I'm a part of a developer, so it shouldn't be that hard.
+Haynes, Kristin: I mean, we could send it to HubSpot. Actually, what we could do is send this to HubSpot as a. Like, a note. Then I could take that note, send that through Power Automate as a vote of go, no go, and then that moves forward.
+Morgan, Brian: There are.
+Haynes, Kristin: That might be the easiest.
+Morgan, Brian: We can even and this is what we do for our other product, find some bullshit in here. We can write directly to a contact record and create a card
+Haynes, Kristin: Name.
+Morgan, Brian: right on the record through the HubSpot API and put. You don't even have to touch it. We will write the properties, create the card and drop it right on the opportunity. And people can go in here. Just click the dropdowns if it
+Schlitz, Phil: We
+Morgan, Brian: requires
+Schlitz, Phil: definitely want it. I
+Morgan, Brian: approval.
+Schlitz, Phil: mean, we're just problem solving it. But I envision it being more of a vote button because, like, these are going to seven humans other than me. And the way that I had it at teams with Dan martone is in the way that Kristen's done it here. It's literally a thumbs up, a thumbs down or a question mark that it goes to them as a team's message and whatever they do aggregates.
+Haynes, Kristin: But I could just. Brian, what we could do is just take this data and send it to Microsoft somehow
+Morgan, Brian: Yeah.
+Haynes, Kristin: and then vote from there.
+Schlitz, Phil: Okay.
+Haynes, Kristin: And that would be actually much easier because the whole voting system on the form that Phil has is, like, so stupid because you have to fill it, like every single question. Phil has lots of questions. You have to put it individually in. And then if you ever make an edit, you have to go edit the whole thing all over again. It's ridiculous. It can't just read a document. It's crazy. Crazy. It can't read a line.
+Morgan, Brian: Microsoft is a turd.
+Haynes, Kristin: I know. You should have heard Phil and I on this call earlier. And it's this company that they want us to use, Microsoft CRM. And Phil and I were just like, no,
+Morgan, Brian: So bad. Oh, my.
+Haynes, Kristin: I've used it before. And it was terrible.
+Morgan, Brian: I'm surprised they even sell it still. It's like.
+Haynes, Kristin: Because they have dumb people who are like, oh, yeah.
+Morgan, Brian: Yeah, it's bizarre. I've got it. I mean, we can do it. We can absolutely do it. Through the developer account I have with Microsoft, I can find the endpoints. And if you. Phil, just show me, like, what data needs to hit there. Like, is it like five people's names, titles, all have to hit. Yes. Or if it. And if you're just looking for, like, the dossier to go at the top to tell them why they're voting on that. That's actually pretty simple.
+Schlitz, Phil: Well, Kirsten built it already is. What, like she built it? Yeah.
+Morgan, Brian: Yeah,
+Schlitz, Phil: Yeah. So we just. We just need to connect it. So she's saying connect it in HubSpot, and then she'll pull it from HubSpot. So. So pitchbox to HubSpot. HubSpot to teams. Teams back to HubSpot.
+Haynes, Kristin: My problem is I'll have to figure out how to connect HubSpot and Power Automate.
+Schlitz, Phil: Okay.
+Morgan, Brian: I can figure it out.
+Haynes, Kristin: It's just. It's ridiculous you would think of, like. Oh, sorry. I hate Microsoft with every fiber of my being.
+Morgan, Brian: It's terrible. The thing is, is the front door won't ever let you in. And that's why you have to hit their API, which, unfortunately, which requires code. The OAuth front door is a piece of shit. And if you have like one scope wrong and you try to hit it, it'll be like, you asked for five more things, then this OAuth is allowed to give you one more thing. Or you ask for four things and this OAuth is configured to give you five, and they
+Haynes, Kristin: Yeah.
+Morgan, Brian: won't let you in the front door. It's fucking stupid.
+Haynes, Kristin: Oh, it's crazy.
+Morgan, Brian: Yeah,
+Haynes, Kristin: Crazy.
+Morgan, Brian: but the API, it rides on what's called a bearer token, but
+Haynes, Kristin: Oh, yeah. No, I know about it. Yeah.
+Morgan, Brian: it'll go across the entire scope and it'll be like. And it'll drop the information where it needs it. It's so much better. Yeah. Phil, if you can show me what has to get from HubSpot to Power Automate,
+Schlitz, Phil: All right. That would be Kristen. Yeah. I wouldn't.
+Morgan, Brian: Show me, like, what. What information has to get there. I mean, a relay would be pretty simple to. To hook up. And I can do it to where I can give you, like a UI where you go in and authentic your HubSpot and log in. So that way it's all authenticated. We use. Use. We use a third party provider called Nango. They're one of the largest oauth brokers. They're SOC 2. All the things. So if, if your HubSpot will let you hit the button. It will, it'll create the, the bridge for you.
+Haynes, Kristin: Awesome. So here's the problem. We have to get Satya to like. We have to get approval to use Brian's system.
+Schlitz, Phil: He knows. Yeah. The only thing is, like,
+Morgan, Brian: What, what do you think he'll, he'll mean, like.
+Schlitz, Phil: Your security, like, you have. You have to be comparable with all the security certifications. And like, you. You said that you're one shy of, like. And it's more optics than anything else.
+Morgan, Brian: Yeah, I mean, it's hard. We are in the middle of getting our SOC 2. We aren't scheduled till January 1st. It's just, it's a huge process. We have a public dpa. We list our sub processors. All of our sub processors do have SoC2. So everything that we're using is SoC2. It's just that my brand doesn't have the SoC2.
+Schlitz, Phil: Right. So it would be, like, inherently, from the get go, in violation of our main MSAs. Interestingly enough, most likely not with prospects. Right. So for prospects, we should be pretty good. But what ends up happening is 30% of our competitive bids or greater are with existing customers that. That we have MSAs with already. So we would be violating the MSAs? Very likely, I would imagine. So. That's, like, the one hurdle on it. So part of me is like, keep it quiet. Keep moving. Creative is running with it with you. Kristen and I are not involved. You know, like, there's. That. There's that side of it, but currently, it's. That's like, Kristen, that's gonna be the hurdle with him. Right? Like, that's it. It's Sock 2. Right? It's.
+Haynes, Kristin: Mm.
+Schlitz, Phil: And that's what? 20,000 for the cert, and then you're scheduled for that assessment on January 1st.
+Haynes, Kristin: I don't even know if that would be it. I think it's just going to be everything with him, to be honest.
+Schlitz, Phil: Okay, well, if that's not it, then I'll put Brian in a conversation with any of those nerds.
+Haynes, Kristin: Oh,
+Schlitz, Phil: All right, you
+Haynes, Kristin: I
+Schlitz, Phil: got it.
+Haynes, Kristin: gotta go. Baseball.
+Schlitz, Phil: All right, I'll stay on Brian. Bye.
+Haynes, Kristin: It was great to see you, Brian.
+Morgan, Brian: Yeah, you too.
+Haynes, Kristin: Okay. Bye, guys.
+Schlitz, Phil: Bye.
+Morgan, Brian: I want the team to be able to use this. Did you see, like, the. The step after this, the launch and the opportunity brief that it was creating?
+Schlitz, Phil: Yeah, man, I. I just want it set up in, like, a process. Process map and Miro or something that I take him through it at, like, just one on one. Like, here's. Here's where we are. Like, here's everything we'll get. Satya will get you in front of Brian. Don't get in our way,
+Morgan, Brian: Yeah,
+Schlitz, Phil: please. Please don't get in our way. Like, make sure this is safe and secure. But like, this is how we run the front of house. This is not back of house. This is not back house. This isn't anything to do with our factory, our trucking, our accounting. This is front of house.
+Morgan, Brian: Yeah,
+Schlitz, Phil: I don't know. I came from hospitality. But front of house gets to do what front of house wants to do.
+Morgan, Brian: Yeah. I mean, the only thing it. It really does at this point, I mean, it doesn't. It is pii. Because it's company names, people's names, company facts, but it's all information that's available online. This is not really information that.
+Schlitz, Phil: That's fine. It's the fact that we'll be feeding it and training it on stuff that will likely be proprietary. Yeah, it will be, with rates and stuff like that. And not to mention the RFP docs and sensitive content and all that, that's the main hurdle.
+Morgan, Brian: What might help him is the way we build it is every company has their own database. You do not go into a shared database. And it's completely. It's like row line security. It's locked. There's. There's no possibility to lead because you're on a. You're like in a different server than your competitor.
+Schlitz, Phil: So when. If you do this for Sparks or Opus or whatever.
+Morgan, Brian: Your data. There's no. It's impossible for your data to touch each other. Yeah, it's impossible.
+Schlitz, Phil: Yeah.
+Morgan, Brian: Like platforms I have that have multitenancy, we share a database and we use security to carve it out. This is the one where I was like, I'm going to create a database for each and every client. It's a motherfucker because basically I have to copy and paste the program every single time, and everyone gets a customer. Instance of it. But that's kind of the value of, you know, being really secure is. I mean, this is like, I have a. I have a development. I have a template. Every time I make changes, I literally have to go in and take what I create and then go and copy it over the top of yours and create your own software every single time.
+Schlitz, Phil: Yeah, I, I personally don't give a. But I'm just thinking through what those hurdles are going to be
+Morgan, Brian: Yeah.
+Schlitz, Phil: and, yeah, like, we don't, we don't need you or this. Technically, everything I just did, I dreamt up. You know, I'm smart guy and understand the top level of how this stuff works. And like, sure, having Claude connect and do this, this, and this will be so much better. It doesn't solve for everything else and it doesn't compare to what you've done, but I'm even concerned about. Yeah, I don't know. Actually, I, I, I do feel pretty good that I'll be able to get what I want. But the team. Here's the, here's the bigger thing. I think stepping back, like, it's to a point where Susa is literally referring to you as the Director of Pursuit Operations. She's like, yeah, you just got to talk to our Director of Pursuit Operation. Like, was. Have you spoken with Brian? Brian. Brian has his own business. She's like, yeah, but, like, he'll do it. Like, we'll take him as a contractor. I'm like, okay, fine, so what, what is the, what is the role? And she go, he'll run the meetings and like, he'll, he'll, he'll manage the process. I'll teach Denise how to use the system. Like, okay, yeah, that all sounds good. Have you asked Brian if he is interested in that?
+Morgan, Brian: I love it.
+Schlitz, Phil: But that's the truth. Like, friend to friend, like, what do you want? You don't have to answer me now, but what do you want?
+Morgan, Brian: I. So, like, I'm.
+Schlitz, Phil: You
+Morgan, Brian: This
+Schlitz, Phil: don't know.
+Morgan, Brian: what I want to do. Like, I'm. I'm not really. I'm not really taking on, like, holistic agency business anymore.
+Schlitz, Phil: Except
+Morgan, Brian: I just.
+Schlitz, Phil: for unbounding.
+Morgan, Brian: Yeah. I mean, it's. But that's different. That's, like. It's niche. It's. You're hiding for very, like, specific things, like me going to market myself as an agency where I have to bring in a customer and I have to run the whole fucking company. Like, no, I'm not doing that. I. I don't want. I. I tried it. It was cute. I don't want to do it. I don't want to be CEO of a event agency.
+Schlitz, Phil: By the way, you should hook up with Adrian because his, his whole thing with Game On Marketing was what you were doing with Sandbox Agency, but just a bit more digital focused.
+Morgan, Brian: Yeah.
+Schlitz, Phil: So he has like people partners that like, he has the headshots of the people. I don't know what they do, but he, he gets referral revenue and, and stuff like that. They kind of trade referral revenue around and like he'll get brought onto a project. You may as well get in on that scheme if it's anything you're interested with. I know he's interested in doing that with you,
+Morgan, Brian: Yeah, I'll touch back out. So, yeah, that's like when I'm. I'm more looking for like fractional. If I am working directly with the brand, it's like a very specific thing.
+Schlitz, Phil: Like with Lauren,
+Morgan, Brian: Yeah. Small crew. But I'm not. I'm not even going to market as Sandbox XM anymore. It's just I'd
+Schlitz, Phil: But
+Morgan, Brian: rather.
+Schlitz, Phil: what do you. But what are you today like for us, with us on where you. If you can answer it now, like, is there a path where you would be on a contract with set hours, set expectations, bi weekly billing, running the resource call, coaching and guiding sales ops? Not saying it's a 40 hour job, might be 20. Is that on your radar or is
+Morgan, Brian: Yeah.
+Schlitz, Phil: it really just. Okay,
+Morgan, Brian: I mean, starting January 1st, that's where I'm taking this with intel is they're just going to bring me on as a part time contractor
+Schlitz, Phil: Okay,
+Morgan, Brian: and a strict strategic event constraint. Strategic event consultant.
+Schlitz, Phil: Okay.
+Morgan, Brian: They're gonna pay me
+Schlitz, Phil: So
+Morgan, Brian: 20.
+Schlitz, Phil: part. Part intel, part pitchbox Forge. Yeah.
+Morgan, Brian: Yeah. And then I could take off odd jobs here and there under my llc. And you
+Schlitz, Phil: Where
+Morgan, Brian: know,
+Schlitz, Phil: do we, where do we fit in to that, like, balance for you?
+Morgan, Brian: I think probably what we'd have to consider is if like what you brought me on originally to do HubSpot for. Like just the understanding that like I'm, I'm doing this for Snowski, but I'm also running a program at time and make sure people are fully aware that two things are happening at once. You know what I'm saying? So that way they don't go like, what the. He's like doing that, but then like he's also running the program. Like, how did that happen? You know, just like have to be very specific that these are two different scopes because Brian can do two different things, you know.
+Schlitz, Phil: We pay this woman, BETH COOPER, Like $1.8 million as a contractor. And she has people that she pays. But like, every time I've done the math, I'm like, she's still probably netting like $800,000 in W or 1090, whatever we pay her company. Like, and we're not,
+Morgan, Brian: Yeah,
+Schlitz, Phil: we're not her only client. And she dresses super cool and she's honestly awesome. Beth Cooper is great. She's a digital. She's like a digital producer. So, you
+Morgan, Brian: There's,
+Schlitz, Phil: know,
+Morgan, Brian: there's a ton of money there.
+Schlitz, Phil: I'm saying there could be a shit ton of money for Lil B.
+Morgan, Brian: And I still, that I still like, if you guys brought me on and you're like, hey, we need, like, we need, we need your crew too. Yeah, that's still going to happen. Like, I still have my
+Schlitz, Phil: For
+Morgan, Brian: people.
+Schlitz, Phil: flexing up on the event side,
+Morgan, Brian: Yeah, absolutely.
+Schlitz, Phil: but I'm just, I'm just talking strictly Director of Pursuit Operations, which we would love as a full time role. But I'm assuming you're going to want as a contractor role. So is that realistic? Like while you have your intel thing, hopefully HubSpot unbound, hopefully some stuff with Lauren and side things. Like to be that for us, 10 hours a week running a scheme, making sure that Denise is like processing and using Pitchbox correctly, being the person running those 15 minute calls. So it's like maybe it's two hours a day worth of work.
+Morgan, Brian: Yeah. If
+Schlitz, Phil: Is
+Morgan, Brian: we
+Schlitz, Phil: that.
+Morgan, Brian: can truly make it an automation like it needs to be, it's absolutely doable. If we approach it like we did it five years ago. Fuck, no. You know?
+Schlitz, Phil: Well, what. So what about like from a licensing model? I know initially you're like, I just need. You need to feed your model. Thank God it's anonymized. Not that I get, again, not that I give a shit, but for satya's sake. And it's gated into our own instance. But
+Morgan, Brian: Yeah.
+Schlitz, Phil: like you might not have much to do if after like a couple months your contract of leading the calls might. Maybe it's just. Yeah, maybe it's just an easy thing. But the running of the system is Denise and Megan and sales ops and they're doing their part. Shouldn't you get a licensing and management fee on top of your con? Like I see your 10 hours a week or whatever it is just as like an hourly rate. That's a project for teaching, coaching, guiding. But then shouldn't there be a fee to use this thing?
+Morgan, Brian: I mean it is fee based software. Yeah, but I mean, and maybe that is, maybe that is actually a booby trap with it is saying, you know, the reason I'm giving you this free because you're helping me actually develop it, but you know how you use it. That could be a booby trap. Then they could be like, hell no. You know
+Schlitz, Phil: Yeah,
+Morgan, Brian: what I mean?
+Schlitz, Phil: it's gonna be. He. He's really good. He's a real CIO And I like him, but
+Morgan, Brian: Yeah,
+Schlitz, Phil: he's. He's like a PE Shark. He's like. Yeah, well, then, Zarnowski, how much. How much of the data is already there? Maybe we already own 30 of it. What? We own 30 of Pitchbox. Like, I don't want to get into those. Like, that's the things I don't want. Want
+Morgan, Brian: That
+Schlitz, Phil: freedom.
+Morgan, Brian: could be like a. I don't know. And the thing is, is your data is not influencing the decisions of other of your competitors. Your data is influencing like how, how I continue to build it to make it better. You know, it's not like you won this because of that so that your competitors can use that information and make their pursuit better. Better. That
+Schlitz, Phil: Yeah.
+Morgan, Brian: doesn't exist. It's just, it's watching how, how you guys work inside of it to tell me like, hey, we probably should optimize to make this better. So. But I mean I can rickety spin it is that, you know, there's like a founder, like a founder package that basically is I walk in the door, implement it and run it for six months to make sure, you know, it's, it's highly attuned and back it by saying, yeah, this, you know, we.
+Schlitz, Phil: Sorry, one second. What? What? I'm talking to Brian. You called him a potato.
+Morgan, Brian: A potato.
+Schlitz, Phil: You're cooking potatoes? I'm cooking potatoes. Hi, Brian.
+Morgan, Brian: Hi.
+Schlitz, Phil: What's the question? And you're done because I'm not. Put any of the barbecue within 15 minutes. Thank you. Sorry for interrupting, Brian.
+Morgan, Brian: What we could say is like, this is the founder package. It includes six months of onboarding. And the reason why this is this way, because this is the way the platform is set up, is every customer gets their own instance and it gets adjusted based on like how you operate. And quite honestly, that might be like easier for him to understand, like, oh, we actually own a version of the software ourselves. You know what I mean?
+Schlitz, Phil: Can you shut it off at any point?
+Morgan, Brian: Technically, yeah.
+Schlitz, Phil: I mean, I'm so. That's good.
+Morgan, Brian: I mean, like. Like, yeah, I could shut it off, like, in 10 seconds.
+Schlitz, Phil: Good.
+Morgan, Brian: Let's push button, pause. We're done.
+Schlitz, Phil: Payment and go through. I.
+Morgan, Brian: Yeah, I. I have it ready to automate that, but I don't. That. That stuff freaks me out a little bit, like, because I hate when, like, anthropic does it to you. They're like, oops, you're out of credit. You can't use me anymore. You know? I hate that. It's like,
+Schlitz, Phil: HubSpot too.
+Morgan, Brian: oh,
+Schlitz, Phil: I'm just trying to wrap my head around it. I want this to work. I need this to work. And you just have no idea, like, the way that people are talking about you. You're solving such a very specific pain point for us. And I know that you have Pitchbox in the front and as, as a friend, I obviously want that for you. Selfishly, for us, like, the part that's valuable to me and to them, it's you. And
+Morgan, Brian: Yeah.
+Schlitz, Phil: I'm not, I'm not saying W2. I'm just saying, like, you're the valuable part. The way that you think, the way that you know our industry and it's less about the technology. And that's no offense to you. Gibby, you're great. Gibson, you're awesome. But it's the man in front of it that's, that's, that's the value to Sue's what she said of you today to Diesel on our touch base. She's like, you'll just love Brian. Like, he was thinking of things we weren't even thinking of and he volunteered it. I just think he worked like 24 hours straight and like all of a sudden all these parts that we hadn't done were done and they were good and he was like, great. Like, very. With grace. Like. So, like responding to the Tesla RFP means like, Brian is not the EP on the Tesla project. Should we win it? But Brian is the RFP lead, not, not, not the ae, not the ad, not the ep. But he's driving things. Sure. Hopefully using his technology. But do you understand what I'm saying? Like,
+Morgan, Brian: Yeah.
+Schlitz, Phil: it's not the management. It's not as. It's not a founder. I don't think it's a founder that's creative and maybe that's a good way of doing it. But it's less about us having you as like a founder, whatever, and more of like Zarco and Lil B contracted for X. You know, project rate 10, 10 hours a week for the next six months is. Is first and foremost separately separate contract is for the use of founder model of and management oversight of Pitchbox.
+Morgan, Brian: Got it.
+Schlitz, Phil: Thereafter a licensing fee, a management fee and an AI fee, token fee, compute fee. And whether you are here or not here in the first director of Pursuit operations we still have access to and as long as we pay the bill can keep doing it. Does that make sense? That's how I see it is like separate the fact
+Morgan, Brian: Yeah,
+Schlitz, Phil: that like
+Morgan, Brian: I
+Schlitz, Phil: and.
+Morgan, Brian: agree.
+Schlitz, Phil: And. And may. Can I. Can I challenge you this way? Would you be willing, you don't need to answer me. But would you be willing to be the director of Pursuit Operations contract without Pitchbox and that is to say like running our resource call which is a 15 minute call every, every week, every day and then back end working with me and Denise and Megan on. Okay, let's pull up the RFPs. The RFIs. Where do we got people working? Chuck, we need a 3D designer, like kind of like a resource gate.
+Morgan, Brian: Yep.
+Schlitz, Phil: Ideally Pitchbox is making that all easier, but still it's like your genius and way of operating and knowing Rachel Springmeier and knowing Halsey and account services, knowing Chuck, Susan Diesel and strategy, creative design. That's pretty much everyone. Plus Jeff in production press for estimation. Like it's eight people with me being one of them.
+Morgan, Brian: Yeah.
+Schlitz, Phil: That's your universe. Plus having two people in Denise and Megan like that. Interesting.
+Morgan, Brian: Before the words left your mouth in the back of my head was like, well, we could just do it without Pitchbox, too.
+Schlitz, Phil: Well that,
+Morgan, Brian: Not
+Schlitz, Phil: so
+Morgan, Brian: dependent
+Schlitz, Phil: that,
+Morgan, Brian: on
+Schlitz, Phil: that's
+Morgan, Brian: that.
+Schlitz, Phil: what I'm saying. Like let's,
+Morgan, Brian: Yeah.
+Schlitz, Phil: because for Satya like I can leverage it by saying hey, we already have a six month contract with Brian. He is our director of pursuit operations. Here's his remit, here's his skill set, here's what he's doing with or without you. He's, he's, he's, he's our captain front of house, captain of how we
+Morgan, Brian: Yeah.
+Schlitz, Phil: respond to these things and then second to secondarily we're already doing all the back end Claude into HubSpot, into teams. We'll be doing that. I don't need Satya for that. Like right now. I, I, Kristen can connect teams and, and Claude like she could do everything. The part that's going to require him is entering your tool and we want your tool.
+Morgan, Brian: Yeah,
+Schlitz, Phil: But you need to write up the plan, the scope of work and we need to create a process map. Those are the two things so
+Morgan, Brian: Yeah,
+Schlitz, Phil: he understands form is submitted, blah blah, blah, blah, blah blah blah. So I think you have three deliverables.
+Morgan, Brian: Yeah,
+Schlitz, Phil: The Brian, Lil B Brian Director of Pursuit operations contract, a process map based on what Gibson recorded and a proposed founder. So founder plan sow for Pitchbox. Right.
+Morgan, Brian: Yeah, I agree. Yeah.
+Schlitz, Phil: In the meantime, are you, have you been invoiced? Have you been invoicing us?
+Morgan, Brian: Yes, I did submit an invoice
+Schlitz, Phil: Okay, cool.
+Morgan, Brian: and
+Schlitz, Phil: I
+Morgan, Brian: then
+Schlitz, Phil: don't
+Morgan, Brian: I
+Schlitz, Phil: want
+Morgan, Brian: got
+Schlitz, Phil: you.
+Morgan, Brian: the invite for Friday, I think.
+Schlitz, Phil: What's Friday?
+Morgan, Brian: This Friday from.
+Schlitz, Phil: What's. Oh, I'm not looking at the Margaret.
+Morgan, Brian: Yes.
+Schlitz, Phil: Yeah, yeah, yeah. Separately. Yeah. Okay,
+Morgan, Brian: Yeah.
+Schlitz, Phil: so we're supposed. About HubSpot. We're supposed to hear back tomorrow.
+Morgan, Brian: Okay.
+Schlitz, Phil: That's. That's the. That's the down select, allegedly. And she's worked up Amiro for phase two.
+Morgan, Brian: Okay.
+Schlitz, Phil: And so Friday is just like a touch base with you and the team on if we got down selected, we have stuff to talk about. If we don't, we'll cancel the meeting.
+Morgan, Brian: Okay. No, I think it's smart that getting ahead. I know Generic reached out to me about some HubSpot, like how. How it functions and stuff.
+Schlitz, Phil: Yeah. Do you. Do you have Inbound, Unbound, Unbound on your calendar? Blocked out, just in case you don't, like, have intel travel or anything.
+Morgan, Brian: Yeah.
+Schlitz, Phil: Okay.
+Morgan, Brian: Yep. And I already told Deidre. I was like, I have already committed to something that basically over this two month span, like, my availability is going to be limited. Yeah. Not
+Schlitz, Phil: How
+Morgan, Brian: just
+Schlitz, Phil: are
+Morgan, Brian: on,
+Schlitz, Phil: you?
+Morgan, Brian: like going up into. On site. I was like, it's gonna be about 60 days and I'm pretty focused on this.
+Schlitz, Phil: How are you with how you were traveling physically now?
+Morgan, Brian: I'm good. I might have to have surgery, but I'm gonna try and do it like in down season. And I think once I do that, I'll be fine. I'm just gonna cut my foot off.
+Schlitz, Phil: Stop it,
+Morgan, Brian: No, I'm not gonna cut that.
+Schlitz, Phil: stop it.
+Morgan, Brian: I say that every day. I was like, just cut the thing off. Like,
+Schlitz, Phil: Oh,
+Morgan, Brian: I don't just put a post on it.
+Schlitz, Phil: I probably shouldn't say this, but I. I met with Tony Palmier yesterday. Just, like, to catch up.
+Morgan, Brian: One of my favorite humans.
+Schlitz, Phil: Yeah. And she lost 70 pounds on. On Zepbound.
+Morgan, Brian: I
+Schlitz, Phil: And
+Morgan, Brian: love.
+Schlitz, Phil: she threw out all of her clothes. She hot. She hired. She has a whole new wardrobe. She's like, I'm a skinny now.
+Morgan, Brian: I love it.
+Schlitz, Phil: She just needs the Rosie o' Donnell facelift because she had, you know, that's all she needs because she's so pretty. She's
+Morgan, Brian: She is. She's beautiful.
+Schlitz, Phil: so. She. She's talking to Halsey
+Morgan, Brian: Good.
+Schlitz, Phil: about. She. She wrote me, she texted me. She's like, phil, I'm bored out of my mind. Do you have any projects for me? I'm like, you don't need the money. She's like, I just need to talk with humans and to work on stuff. So I'm like, okay, what do you want? She wants to do fractional account director. She's like 20 hours a week. She goes, obviously, some weeks I know I'll be 40. She's like, I want to travel. Like, throw me on a plane. Like, I'll go to show site. She's like, you know how much easier it is to 70 pounds lighter now? And. Yeah, I. I've been there. I'm currently there. So, yeah, we're talking to have her come on and be an account director on stuff we need her for. And with the right type of client, she's like, put me with the old. She's like, I'll be good with the old.
+Morgan, Brian: The Old Farmer Girls.
+Schlitz, Phil: Yeah. So that's kind of cool.
+Morgan, Brian: Yeah. That's cool. I love her. God, I was wondering at one point she was gonna be like this. Give me something to do.
+Schlitz, Phil: That happened two days ago because I got the text like, I need work.
+Morgan, Brian: It's been like, five years now. Or. I don't know. Time goes
+Schlitz, Phil: Yeah.
+Morgan, Brian: by.
+Schlitz, Phil: About. About four, but she was still doing, like, some consult, like, contracting stuff for them. Lucia got demoted.
+Morgan, Brian: I was. Yeah, I was like. I couldn't tell if that's what happened, but I could tell something happened.
+Schlitz, Phil: Yeah. She's got a boss for the first time since being an Amazon, so her life isn't great, but,
+Morgan, Brian: I saw that role, and I was like, is that her counterpart or her boss? Like, how is that? What? So it was very interesting to see them hire that role.
+Schlitz, Phil: Yeah, I. She's tough. She never really glommed on to me. But
+Morgan, Brian: She hated me.
+Schlitz, Phil: you. She likes women.
+Morgan, Brian: She, like, I walked. Like. I
+Schlitz, Phil: Only
+Morgan, Brian: remember when
+Schlitz, Phil: women?
+Morgan, Brian: I introduced myself to her, she just, like, looked at me like I was a potato.
+Schlitz, Phil: Yeah, she just likes women.
+Morgan, Brian: Yeah. Is she family? Does she have husband, kids.
+Schlitz, Phil: I don't know. She doesn't come across like she does, but, yeah, I'm not sure, but. Oh. Oh. So she got demoted and she bid out. They bid out. CES and Adam Charles, that twat called her up and was like, why are you putting this out to bid? And she's like, you guys haven't replaced Tony. I told you, I need Tony. You have these account people who send over a budget and send me a line saying, let me know if you have any questions. She goes, tony wouldn't send over a budget. She would schedule a time, she'd pull it up and she would say, I missed the budget, but I really missed it earlier today, and I cut back 500,000. I still have 200,000 more. Let's talk like, here's the things that I did. Here's the. So, Adam, you don't. You don't. You just. You. You're taking for granted that I have to use you because your gear is cheap and you're the gc. She goes, that's just not like, wake up.
+Morgan, Brian: Yeah.
+Schlitz, Phil: So
+Morgan, Brian: Damn. Oof.
+Schlitz, Phil: we got the rfp, but I declined it
+Morgan, Brian: It's
+Schlitz, Phil: because
+Morgan, Brian: too
+Schlitz, Phil: I
+Morgan, Brian: hard.
+Schlitz, Phil: asked. I asked. I asked Tony. I'm like, is this real? She's like, no. Not real. It's just. It's just them posturing.
+Morgan, Brian: Would they take it.
+Schlitz, Phil: What's that?
+Morgan, Brian: Would they take it, like, somewhere else or away from Freeman?
+Schlitz, Phil: What's that noise?
+Morgan, Brian: What the fuck is going. This is my email going absolute batshit.
+Schlitz, Phil: I guess your noise canceling turned off.
+Morgan, Brian: What the is going on?
+Schlitz, Phil: I gotta go. I gotta go help over with the grill anyway. But. Yeah, let me know maybe next week if we can review some. I want to move a little fast on it. I would like to. If you're down, I definitely want to present the contract model for Pursuit Lead to Nick and then the process map with the founder. Sow to Satya can come after. Like, let's get you signed up for the first thing to leverage the second thing. If you're
+Morgan, Brian: Yeah,
+Schlitz, Phil: okay with that. If you're
+Morgan, Brian: yeah.
+Schlitz, Phil: okay with that.
+Morgan, Brian: They don't have
+Schlitz, Phil: Okay.
+Morgan, Brian: to mutually exclusive at
+Schlitz, Phil: Okay.
+Morgan, Brian: all whatsoever. Yeah, I agree.
+Schlitz, Phil: All right.
+Morgan, Brian: Yeah,
+Schlitz, Phil: All right, buddy. I so appreciate you talk to you on Friday.
+Morgan, Brian: yeah, I appreciate it. Right.
+```
+
+---
+
+_Logged by Meet Gibson · 2026-08-19T22:33:36.466Z_
